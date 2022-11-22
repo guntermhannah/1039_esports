@@ -1,3 +1,4 @@
+match_id,hero_id,account_id,net_worth,kills,deaths,hero_damage,gold_per_min,assists,xp_per_min,kills,last_hits,tower_damage,obs_placed,roshans_killed
 6879583715,76,254961904.0,4573,0,1,727,482,4,422,0,43,3154,,
 6879583715,45,48301797.0,4774,2,1,1989,515,3,362,2,41,1681,,
 6879583715,114,138215673.0,4272,3,1,660,441,2,285,3,30,2526,,
