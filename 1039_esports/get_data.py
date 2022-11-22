@@ -26,7 +26,7 @@ class Dota2Api():
 
         # parse results
         data = pd.DataFrame(response.json())
-        stats = ["match_id", "radiant_win", "duration", "avg_mmr", "game_mode"]
+        stats = ["match_id", "radiant_win", "duration", "avg_mmr", "game_mode", "start_time"]
         stats_filtered = data[[stat for stat in stats]]
 
         return stats_filtered
@@ -49,9 +49,9 @@ class Dota2Api():
         #filter player data by relevent stats
         stats_keys = ['match_id', 'hero_id', 'account_id',
                     'net_worth', 'kills', 'deaths','hero_damage',
-                    'gold_per_min', 'assists', 'xp_per_min',
-                    'kills','last_hits', 'tower_damage',
-                    'obs_placed', 'roshans_killed'
+                    'gold_per_min', 'assists', 'xp_per_min', 
+                    'last_hits', 'tower_damage',
+                    'obs_placed', 'roshans_killed', "isRadiant", "win"
         ]
 
         data = player_data[[stat for stat in stats_keys]]
