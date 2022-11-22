@@ -77,9 +77,11 @@ def get_rank_stats(rank:int)->pd.DataFrame:
 
 st.markdown("""## Compare your statistics with other ranks """)
 
-col1_a, col2_a = st.columns(2)
 
-user_selected_rank = col1_a.radio("Select a rank for comparison: ",
+
+col1_a, col2_a, col3_a = st.columns(3)
+
+user_selected_rank = col1_a.selectbox("Select a rank for comparison: ",
                                     ('Herald (0-769)',
                                     'Guardian (770-1539)',
                                     'Crusader (1540-2309)',
@@ -89,7 +91,19 @@ user_selected_rank = col1_a.radio("Select a rank for comparison: ",
                                     'Divine (4620-5420+)',
                                     'Immortal (∽6000+)'))
 
-user_selected_role = col2_a.radio("Select your role: ",
+user_selected_hero = col3_a.selectbox("Select your hero: ",
+                                  ('Pudge',
+                                   'Juggernaut',
+                                   'Sniper',
+                                   'Lion',
+                                   'Phantom Assassin',
+                                   'Shadow Fiend',
+                                   'Witch Doctor',
+                                   'Ogre Magi',
+                                   'Zeus',
+                                   'Invoker'))
+
+user_selected_role = col2_a.selectbox("Select your role: ",
                                     ("Carry",
                                     "Tank",
                                     "Support"))
