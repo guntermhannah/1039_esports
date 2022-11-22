@@ -26,7 +26,7 @@ class Dota2Api():
 
         # parse results
         data = pd.DataFrame(response.json())
-        stats = ["match_id", "radiant_win", "duration", "avg_mmr", "game_mode"]
+        stats = ["match_id", "radiant_win", "duration", "avg_mmr", "game_mode", "start_time"]
         stats_filtered = data[[stat for stat in stats]]
 
         return stats_filtered
