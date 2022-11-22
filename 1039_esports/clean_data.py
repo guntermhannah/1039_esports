@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from sklearn.preprocessing import OneHotEncoder()
 import os
 
 def clean_player_data():
@@ -25,5 +26,9 @@ def clean_player_data():
     for i in range(len(df)):
         if df[["match_id"]][i] not in matches_list:
             df_clean.drop([i], inplace = True)
+
+    # one hot encode hero_id
+    ohe = OneHotEncoder(sparse = False)
+    ohe.fit_transform(df["hero_id"])
 
     return df_clean
