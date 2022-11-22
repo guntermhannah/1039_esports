@@ -24,11 +24,12 @@ def clean_player_data():
     matches_list = matches["match_id"]
 
     for i in range(len(df)):
-        if df[["match_id"]][i] not in matches_list:
+        if df_clean[["match_id"]][i] not in matches_list:
             df_clean.drop([i], inplace = True)
 
     # one hot encode hero_id
     ohe = OneHotEncoder(sparse = False)
-    df_encoded = ohe.fit_transform(df["hero_id"])
+    ohe.fit(df_clean[["hero_id"]])
+    df_clean[ohe.get_feature_names_out()] = ohe.transform(df_clean[["hero_id"]])
 
-    return df_encoded
+    return df_clean
