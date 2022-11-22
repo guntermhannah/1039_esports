@@ -17,12 +17,12 @@ class Dota2Api():
         url = "https://api.opendota.com/api/publicMatches"
         params = {"api_key": api_key}
 
-        #response = requests.get(url, params)
-        response = requests.get(url)
+        response = requests.get(url, params)
+        # response = requests.get(url)
 
         # check api call was successful
         if response.status_code != 200:
-            return "Error: status code ", response.status_code
+            return "Error"
 
         # parse results
         data = pd.DataFrame(response.json())
@@ -37,12 +37,12 @@ class Dota2Api():
         url = f"https://api.opendota.com/api/matches/{match_id}"
         params = {"api_key": api_key}
 
-        #response = requests.get(url, params)
-        response = requests.get(url)
+        response = requests.get(url, params)
+        # response = requests.get(url)
 
         # check api call was successful
         if response.status_code != 200:
-            return "Error: status code ", response.status_code
+            return "Error"
 
         player_data = pd.DataFrame(response.json()["players"])
 
@@ -50,10 +50,11 @@ class Dota2Api():
         stats_keys = ['match_id', 'hero_id', 'account_id',
                     'net_worth', 'kills', 'deaths','hero_damage',
                     'gold_per_min', 'assists', 'xp_per_min',
-                    'kills_per_min','last_hits', 'tower_damage',
+                    'kills','last_hits', 'tower_damage',
                     'obs_placed', 'roshans_killed'
         ]
 
         data = player_data[[stat for stat in stats_keys]]
 
         return data
+
