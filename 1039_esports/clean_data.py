@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 def clean_player_data():
-    """This function cleans the players data in the players.csv file, returns a clean dataframe"""
+    """Cleans the players data in the players.csv file, returns a clean dataframe"""
     df = pd.read_csv(os.path.join("data","players.csv"))
     
     # drop duplicates
@@ -16,6 +16,4 @@ def clean_player_data():
     # missing data -- missing account_id means it was a bot, not a player, drop those rows
     df_clean = df_clean.dropna()
 
-    print(df_clean.isnull().sum()/len(df))
-
-clean_player_data()
+    return df_clean
