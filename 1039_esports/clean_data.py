@@ -26,6 +26,4 @@ def clean_player_data():
         if df[["match_id"]][i] not in matches_list:
             df_clean.drop([i], inplace = True)
 
-
-
     return df_clean
