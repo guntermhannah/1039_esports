@@ -29,6 +29,6 @@ def clean_player_data():
 
     # one hot encode hero_id
     ohe = OneHotEncoder(sparse = False)
-    ohe.fit_transform(df["hero_id"])
+    df_encoded = ohe.fit_transform(df["hero_id"])
 
-    return df_clean
+    return df_encoded
