@@ -1,4 +1,4 @@
-import requests 
+import requests
 import os
 import pandas as pd
 
@@ -22,8 +22,5 @@ def fetch_matches(is_first = False):
     #append newly fetched data to matches.csv
     path = os.path.join("..", "raw_data", "matches.csv")
     data.to_csv(path,
-                "w" if is_first else "a",
-                header = is_first, 
+                header = is_first,
                 index = False)
-
-
