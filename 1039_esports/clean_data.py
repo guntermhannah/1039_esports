@@ -31,5 +31,6 @@ def clean_player_data():
     ohe = OneHotEncoder(sparse = False)
     ohe.fit(df_clean[["hero_id"]])
     df_clean[ohe.get_feature_names_out()] = ohe.transform(df_clean[["hero_id"]])
+    df_clean.drop(columns = ["hero_id"], inplace=True)
 
     return df_clean
