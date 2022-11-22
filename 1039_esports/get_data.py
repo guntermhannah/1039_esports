@@ -49,8 +49,8 @@ class Dota2Api():
         #filter player data by relevent stats
         stats_keys = ['match_id', 'hero_id', 'account_id',
                     'net_worth', 'kills', 'deaths','hero_damage',
-                    'gold_per_min', 'assists', 'xp_per_min',
-                    'kills','last_hits', 'tower_damage',
+                    'gold_per_min', 'assists', 'xp_per_min', 
+                    'last_hits', 'tower_damage',
                     'obs_placed', 'roshans_killed'
         ]
 
