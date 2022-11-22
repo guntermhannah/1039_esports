@@ -51,7 +51,7 @@ class Dota2Api():
                     'net_worth', 'kills', 'deaths','hero_damage',
                     'gold_per_min', 'assists', 'xp_per_min', 
                     'last_hits', 'tower_damage',
-                    'obs_placed', 'roshans_killed', "isRadiant","win"
+                    'obs_placed', 'roshans_killed', 'isRadiant','win'
         ]
 
         data = player_data[[stat for stat in stats_keys]]
