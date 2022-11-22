@@ -2,6 +2,8 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 
+# streamlit run app.py
+
 # Page structure
 st.set_page_config(
     page_title="Dota2 Player Statistics",
@@ -75,23 +77,30 @@ def get_rank_stats(rank:int)->pd.DataFrame:
 
 st.markdown("""## Compare your statistics with other ranks """)
 
-user_selected_rank = st.radio("Select a rank for comparison: ",
-                                ('Herald (0-769)',
-                                'Guardian (770-1539)',
-                                'Crusader (1540-2309)',
-                                'Archon (2310-3079)',
-                                'Legend (3080-3849)',
-                                'Ancient (3850-4619)',
-                                'Divine (4620-5420+)',
-                                'Immortal (∽6000+)'))
+col1_a, col2_a = st.columns(2)
 
-col1, col2 = st.columns(2)
+user_selected_rank = col1_a.radio("Select a rank for comparison: ",
+                                    ('Herald (0-769)',
+                                    'Guardian (770-1539)',
+                                    'Crusader (1540-2309)',
+                                    'Archon (2310-3079)',
+                                    'Legend (3080-3849)',
+                                    'Ancient (3850-4619)',
+                                    'Divine (4620-5420+)',
+                                    'Immortal (∽6000+)'))
 
-col1.write("Stats for user:")
-col1.write(get_user_stats())
+user_selected_role = col2_a.radio("Select your role: ",
+                                    ("Carry",
+                                    "Tank",
+                                    "Support"))
 
-col2.write("Comparison stats:")
-col2.write(get_rank_stats())
+col1_b, col2_b = st.columns(2)
+
+col1_b.write("Stats for user:")
+col1_b.write(get_user_stats())
+
+col2_b.write("Comparison stats:")
+col2_b.write(get_rank_stats())
 
 # Recommendations
     # Areas most affected
