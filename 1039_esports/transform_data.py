@@ -35,7 +35,7 @@ def transform_player_data(account_id):
     """
 
     # we make a call to the get_data method to retrieve the recent matches
-    player_df = api.get_player_data(player_id)
+    player_df = api.get_player_data(account_id)
 
     # we also want to transform some data to usable data like kills to kills per min
     keys_to_transform = ['kills', 'deaths', 'assists', 'hero_damage', 'tower_damage',
