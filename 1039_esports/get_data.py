@@ -58,3 +58,21 @@ class Dota2Api():
 
         return data
 
+
+    def get_player_data(self, account_id):
+        "This method retrieves the 20 last games for a given player account id"
+
+        # making the api request to get the json data of the last 20 games
+        response = requests.get(self.url + f'/players/{account_id}/recentMatches').json()
+
+        # deciding the keys we are going to use
+        player_keys = ['match_id', 'radiant_win', 'duration', 'game_mode', 'lobby_type',
+                       'hero_id', 'kills', 'deaths', 'assists', 'average_rank',
+                       'xp_per_min', 'gold_per_min', 'hero_damage', 'tower_damage',
+                       'last_hits']
+
+        # turning the response into a dataframe and keeping only the keys we need
+        player_data = pd.DataFrame(response)
+        data = player_data[[stat for stat in player_keys]]
+
+        return data
