@@ -21,3 +21,5 @@ def model_KNN():
     base_knn = cv_results['test_score'].mean()
 
     return base_knn
+
+model_KNN()
