@@ -54,4 +54,7 @@ def clean_player_data():
                                                                     ]])
     df_clean.drop(columns=["hero_id"], inplace=True)
 
+    # drop rows where the player didnt win
+    df_clean.drop(df_clean[df_clean['win'] == 1].index, inplace=True)
+
     return df_clean
