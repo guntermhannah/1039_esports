@@ -42,7 +42,11 @@ def clean_player_data():
     df_clean = df_clean.dropna()
 
 
-    # drop rows where the player didnt win
-    df_clean.drop(df_clean[df_clean['win'] == 0].index, inplace=True)
+    # one hot encode hero_id
+    ohe = OneHotEncoder(sparse=False)
+    ohe.fit(df_clean[["hero_id"]])
+    df_clean[ohe.get_feature_names_out()] = ohe.transform(df_clean[["hero_id"
+                                                                    ]])
+    df_clean.drop(columns=["hero_id"], inplace=True)
 
     return df_clean
