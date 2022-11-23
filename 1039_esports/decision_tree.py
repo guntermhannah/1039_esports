@@ -1,12 +1,7 @@
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.model_selection import cross_validate
-from matches_clean import clean_matches_data, clean_player_data
-import pandas as pd
-import numpy as np
 
-
-def tree_model(X,y,max_depth = None, min_samples_split = 2, min_samples_leaf = 1, max_features = None):
-
+def tree_model(X,y,max_depth = 120, min_samples_split = 90, min_samples_leaf = 7, max_features = None):
+        """returns a decision tree classifier model fit on X,y"""
         # instantiate model
         tree = DecisionTreeClassifier(max_depth=max_depth, 
                         min_samples_split=min_samples_split, 
