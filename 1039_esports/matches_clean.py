@@ -11,10 +11,10 @@ def clean_matches_data():
     df = pd.read_csv(os.path.join('data', 'matches.csv'))
 
     # Drop duplicates of match_id
-    df.drop_duplicates(subset='match_id', inplace=True)
+    df.drop_duplicates(subset=['match_id'], inplace=True)
 
     # Drop avg_mmr NaN values
-    df.dropna(subset='avg_mmr', inplace=True)
+    df.dropna(subset=['avg_mmr'], inplace=True)
 
     # OrdinalEncoder the radiant_win column
     ordinal_encoder = OrdinalEncoder()
@@ -22,12 +22,13 @@ def clean_matches_data():
 
     return df
 
+
 def clean_player_data():
-    """Cleans the players data in the players.csv file, returns a clean dataframe. 
+    """Cleans the players data in the players.csv file, returns a clean dataframe.
     Drops any player data that does not have corresponding match in matches.csv"""
 
-    df = pd.read_csv(os.path.join("data","players.csv"))
-    
+    df = pd.read_csv(os.path.join("data", "players.csv"))
+
     # drop duplicates
     df_clean = df.drop_duplicates()
 
@@ -39,17 +40,18 @@ def clean_player_data():
     df_clean = df_clean.dropna()
 
     # drop player data that has been dropped from matches.csv
-    matches = pd.read_csv(os.path.join("data","matches.csv"))
+    matches = pd.read_csv(os.path.join("data", "matches.csv"))
     matches_list = matches["match_id"]
 
-    for i in range(len(df)):
+    for i in range(len(df_clean)):
         if df_clean[["match_id"]][i] not in matches_list:
-            df_clean.drop([i], inplace = True)
+            df_clean.drop([i], inplace=True)
 
     # one hot encode hero_id
-    ohe = OneHotEncoder(sparse = False)
+    ohe = OneHotEncoder(sparse=False)
     ohe.fit(df_clean[["hero_id"]])
-    df_clean[ohe.get_feature_names_out()] = ohe.transform(df_clean[["hero_id"]])
-    df_clean.drop(columns = ["hero_id"], inplace=True)
+    df_clean[ohe.get_feature_names_out()] = ohe.transform(df_clean[["hero_id"
+                                                                    ]])
+    df_clean.drop(columns=["hero_id"], inplace=True)
 
     return df_clean
