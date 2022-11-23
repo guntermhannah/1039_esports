@@ -11,5 +11,13 @@ def model_KNN():
     # merge the datasets
     df = pd.merge(clean_matches_data(), clean_player_data(), on='match_id')
 
+    X = df.drop(columns=['match_id', 'hero_id', 'account_id', 'isRadiant', 'win', 'radiant_win'])
+    y = df['hero_id']
 
-    X = df.drop(columns=['match_id', 'hero_id', 'account_id'])
+    knn_model = KNeighborsRegressor()
+
+    cv_results = cross_validate(knn_model, X, y)
+
+    base_knn = cv_results['test_score'].mean()
+
+    return base_knn
