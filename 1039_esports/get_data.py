@@ -76,8 +76,3 @@ class Dota2Api():
         data = player_data[[stat for stat in player_keys]]
 
         return data
-
-
-api = Dota2Api()
-#print(api.get_player_data(os.environ.get('PLAYER_ID')))
-api.get_player_data('95816')
