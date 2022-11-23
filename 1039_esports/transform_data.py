@@ -1,6 +1,7 @@
 from get_data import Dota2Api
 import pandas as pd
 import os
+import time
 
 api = Dota2Api()
 
@@ -9,9 +10,12 @@ def transform_data():
 
     # retrieve matches data, append to matches csv
     matches_data = api.fetch_matches()
+
     matches_data.to_csv(os.path.join("1039_esports", "data", "matches.csv"),
                         mode = "a", index = False, header=False)
-
+    
+    
+        
     # loop through the matches data to get specific match infromation
     for i in range(len(matches_data)):
 
@@ -26,6 +30,8 @@ def transform_data():
         player_stats_data.to_csv(os.path.join("1039_esports", "data", "players.csv"),
                                                             mode = "a", index = False,
                                                             header=False)
+
+        time.sleep(0.5)
 
 
 def transform_player_data(account_id):
