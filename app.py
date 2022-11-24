@@ -33,7 +33,6 @@ opponents last matches and predict who will win""")
 
 st.markdown("""## ❗ Get started ❗ """)
 
-
 # Prompt user to enter an account_id
 account_id = st.text_input("Enter your Account ID: ")
 opps_acc_id = st.text_input("Enter your Opponent's Account ID: ")
@@ -65,79 +64,81 @@ if user_id and opps_id is not False:
         st.write("The opponent has a higher probability of winning")
 
 
-# user_data = get_user_data(account_id)
-# st.write("Data for user: ", account_id)
-# st.write(user_data.head())
+# ~~~~~~~~~~~~ misc ~~~~~~~~~~~~~~~~
 
-# Return the processed statistics on the user's data
-def get_user_stats()->pd.DataFrame:
-    # Example placeholder
-    return pd.DataFrame(
-    np.random.randn(10,5),
-    columns=('col %d' % i for i in range(5))
-    )
+# # user_data = get_user_data(account_id)
+# # st.write("Data for user: ", account_id)
+# # st.write(user_data.head())
 
-
-# Return processed statistics of average user in the same rank
-@st.cache
-def get_rank_stats(rank:int)->pd.DataFrame:
-
-    # if-statements depending on rank chosen by user
-    # if user_selected_rank == 'Herald (0-769)':
-
-    # Example placeholder
-    return pd.DataFrame(
-        np.random.randn(10,5),
-        columns=('col %d' % i for i in range(5))
-    )
-
-# Comparison
-
-# st.markdown("""## Compare your statistics with other ranks """)
+# # Return the processed statistics on the user's data
+# def get_user_stats()->pd.DataFrame:
+#     # Example placeholder
+#     return pd.DataFrame(
+#     np.random.randn(10,5),
+#     columns=('col %d' % i for i in range(5))
+#     )
 
 
+# # Return processed statistics of average user in the same rank
+# @st.cache
+# def get_rank_stats(rank:int)->pd.DataFrame:
 
-# col1_a, col2_a, col3_a = st.columns(3)
+#     # if-statements depending on rank chosen by user
+#     # if user_selected_rank == 'Herald (0-769)':
 
-# user_selected_rank = col1_a.selectbox("Select a rank for comparison: ",
-#                                     ('Herald (0-769)',
-#                                     'Guardian (770-1539)',
-#                                     'Crusader (1540-2309)',
-#                                     'Archon (2310-3079)',
-#                                     'Legend (3080-3849)',
-#                                     'Ancient (3850-4619)',
-#                                     'Divine (4620-5420+)',
-#                                     'Immortal (∽6000+)'))
+#     # Example placeholder
+#     return pd.DataFrame(
+#         np.random.randn(10,5),
+#         columns=('col %d' % i for i in range(5))
+#     )
 
-# user_selected_hero = col3_a.selectbox("Select your hero: ",
-#                                   ('Pudge',
-#                                    'Juggernaut',
-#                                    'Sniper',
-#                                    'Lion',
-#                                    'Phantom Assassin',
-#                                    'Shadow Fiend',
-#                                    'Witch Doctor',
-#                                    'Ogre Magi',
-#                                    'Zeus',
-#                                    'Invoker'))
+# # Comparison
 
-# user_selected_role = col2_a.selectbox("Select your role: ",
-#                                     ("Carry",
-#                                     "Tank",
-#                                     "Support"))
+# # st.markdown("""## Compare your statistics with other ranks """)
 
-# col1_b, col2_b = st.columns(2)
 
-# col1_b.write("Stats for user:")
-# col1_b.write(get_user_stats())
 
-# col2_b.write("Comparison stats:")
-# col2_b.write(get_rank_stats())
+# # col1_a, col2_a, col3_a = st.columns(3)
 
-# Recommendations
-    # Areas most affected
-    # Areas least affected
-    # Areas most important
+# # user_selected_rank = col1_a.selectbox("Select a rank for comparison: ",
+# #                                     ('Herald (0-769)',
+# #                                     'Guardian (770-1539)',
+# #                                     'Crusader (1540-2309)',
+# #                                     'Archon (2310-3079)',
+# #                                     'Legend (3080-3849)',
+# #                                     'Ancient (3850-4619)',
+# #                                     'Divine (4620-5420+)',
+# #                                     'Immortal (∽6000+)'))
 
-# st.markdown("""## Recommendations """)
-# st.text(""" Recommendations """)
+# # user_selected_hero = col3_a.selectbox("Select your hero: ",
+# #                                   ('Pudge',
+# #                                    'Juggernaut',
+# #                                    'Sniper',
+# #                                    'Lion',
+# #                                    'Phantom Assassin',
+# #                                    'Shadow Fiend',
+# #                                    'Witch Doctor',
+# #                                    'Ogre Magi',
+# #                                    'Zeus',
+# #                                    'Invoker'))
+
+# # user_selected_role = col2_a.selectbox("Select your role: ",
+# #                                     ("Carry",
+# #                                     "Tank",
+# #                                     "Support"))
+
+# # col1_b, col2_b = st.columns(2)
+
+# # col1_b.write("Stats for user:")
+# # col1_b.write(get_user_stats())
+
+# # col2_b.write("Comparison stats:")
+# # col2_b.write(get_rank_stats())
+
+# # Recommendations
+#     # Areas most affected
+#     # Areas least affected
+#     # Areas most important
+
+# # st.markdown("""## Recommendations """)
+# # st.text(""" Recommendations """)
