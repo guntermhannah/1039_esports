@@ -14,8 +14,6 @@ def transform_data():
     matches_data.to_csv(os.path.join("1039_esports", "data", "matches.csv"),
                         mode = "a", index = False, header=False)
 
-
-
     # loop through the matches data to get specific match infromation
     for i in range(len(matches_data)):
 
@@ -46,3 +44,21 @@ def transform_player_data(account_id):
     player_df.to_csv(os.path.join("1039_esports", "data", "single_player_data.csv"),
                                                         mode = "a", index = False,
                                                         header=False)
+
+
+def average_player_data(account_id):
+    "This method collects recent games from an account id and returns the average stats"
+    # retrieving the last games from the player
+    player_df = api.get_player_data(account_id)
+
+    # we remove the columns we dont need
+    player_df = player_df.drop(columns = ['game_mode', 'radiant_win', 'duration',
+                                    'match_id', 'lobby_type', 'hero_id', 'average_rank'])
+
+    # we aggregate the results to retrieve the mean of each column
+    player_df_mean = player_df.agg('mean')
+
+    return player_df_mean
+
+
+average_player_data(323271155)
