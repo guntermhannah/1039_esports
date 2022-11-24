@@ -66,6 +66,9 @@ class Dota2Api():
         params = {"api_key": api_key}
         response = requests.get(url_ext, params).json()
 
+        if response.status_code != 200:
+            return ""
+
         # deciding the keys we are going to use
         player_keys = ['match_id', 'radiant_win', 'duration', 'game_mode', 'lobby_type',
                        'hero_id', 'kills', 'deaths', 'assists', 'average_rank',
