@@ -92,8 +92,7 @@ def get_training_set():
 
     games = pd.DataFrame(games)
 
-
-
+    # removing matches where there is no average player data for a player or opponent
     for i in range(len(games.head())):
         if type(average_player_data(games["player"][i])) == str or type(average_player_data(games["opponent"][i])) == str:
             games = games.drop([i]) 
