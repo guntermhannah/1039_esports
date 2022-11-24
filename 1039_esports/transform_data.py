@@ -51,6 +51,9 @@ def average_player_data(account_id):
     # retrieving the last games from the player
     player_df = api.get_player_data(account_id)
 
+    if type(player_df) == str:
+        return
+
     # we remove the columns we dont need
     player_df = player_df.drop(columns = ['game_mode', 'radiant_win', 'duration',
                                     'match_id', 'lobby_type', 'hero_id', 'average_rank'])
