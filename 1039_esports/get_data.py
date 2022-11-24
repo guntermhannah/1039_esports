@@ -49,7 +49,7 @@ class Dota2Api():
         #filter player data by relevent stats
         stats_keys = ['match_id', 'hero_id', 'account_id',
                     'net_worth', 'kills', 'deaths','hero_damage',
-                    'gold_per_min', 'assists', 'xp_per_min', 
+                    'gold_per_min', 'assists', 'xp_per_min',
                     'last_hits', 'tower_damage',
                     'obs_placed', 'roshans_killed', 'isRadiant','win'
         ]
@@ -76,4 +76,15 @@ class Dota2Api():
         player_data = pd.DataFrame(response)
         data = player_data[[stat for stat in player_keys]]
 
-        return data
+        # we also want to transform some data to usable data like kills to kills per min
+        keys_to_transform = ['kills', 'deaths', 'assists', 'hero_damage', 'tower_damage',
+                            'last_hits']
+        for key in keys_to_transform:
+
+            # we go through every row and replace the specific key value with its value/duration
+            player_df[key] = player_df.apply(lambda row: 60*row[key]/row['duration'], axis = 1)
+
+            # we also change the name of the column to the key_per_min format
+            player_df = player_df.rename(columns={key: f'{key}_per_min'})
+
+        return player_df
