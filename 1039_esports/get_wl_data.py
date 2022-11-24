@@ -10,10 +10,14 @@ def get_wl_data(account_id):
     url = f"https://api.opendota.com/api/players/{account_id}/wl"
     
     response = requests.get(url)
+    
+    if response.status_code != 200:
+        return {"win":0, "lose": 0}
 
     data = response.json()
 
     return data
+
 
 def build_wl_dataset():
     """builds csv file of individual player win/loss data"""
@@ -21,7 +25,7 @@ def build_wl_dataset():
     player_data = clean_player_data()
     all_players = []
 
-    for i in range(len(player_data)):
+    for i in range(500):
         account_id = str(int(player_data.iloc[i,2]))
         if len(account_id)<9:
             account_id = account_id + "0"*(9-len(account_id))
