@@ -61,4 +61,5 @@ def average_player_data(account_id):
     return player_df_mean
 
 
-average_player_data(323271155)
+# to test the function average_player_data
+#average_player_data(323271155)
