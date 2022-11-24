@@ -2,6 +2,7 @@ import pandas as pd
 import os
 
 from matches_clean import clean_player_data, clean_matches_data
+from transform_data import average_player_data
 
 
 def get_training_set():
@@ -13,24 +14,16 @@ def get_training_set():
     # merge datasets
     df = player_data.merge(matches_data)
 
-    # feature manipulation -- creating per min stats
-    df["deaths_per_min"] = df["deaths"]/df["duration"]
-    df["kills_per_min"] = df["kills"]/df["duration"]
-    df["assists_per_min"] = df["assists"]/df["duration"]
-
     # relevant features
     features = ['deaths_per_min', 
                 'assists_per_min', 
-                'tower_damage', 
+                'tower_damage_per_min', 
                 'xp_per_min', 
                 'gold_per_min', 
-                'net_worth',
                 'kills_per_min',
-                'hero_damage', 
-                'last_hits', 
+                'hero_damage_per_min', 
+                'last_hits_per_min', 
                 'hero_id',
-                'roshans_killed', 
-                'obs_placed'
     ]
 
 
@@ -91,13 +84,21 @@ def get_training_set():
             game["winner"] = opponent_account_id
             
         # get player and opponent stats
-        for feature in features:
-            game[f"player_{feature}"] = new_df.loc[(match,False), feature]
-            game[f"opponent_{feature}"] = new_df.loc[(match,True), feature]
+        # for feature in features:
+        #     game[f"player_{feature}"] = new_df.loc[(match,False), feature]
+        #     game[f"opponent_{feature}"] = new_df.loc[(match,True), feature]
                 
         games.append(game)
 
-    pd.DataFrame(games).to_csv(os.path.join("data", "player_pairs_stats.csv"), mode = "w", index = False, header=True)
+    games = pd.DataFrame(games)
+
+    # get player and opponent average history
+    for feature in features:
+        games[f"player_{feature}"] = games["player"].apply(lambda x:average_player_data(x)[feature])
+
+
+    print(games.head())
+    # pd.DataFrame(games).to_csv(os.path.join("data", "player_pairs_stats.csv"), mode = "w", index = False, header=True)
         
 
 get_training_set()
