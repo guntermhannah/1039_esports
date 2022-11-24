@@ -3,6 +3,9 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 
+# local imports
+from scrape.steam_id_finder import steam_id_finder
+
 # streamlit run app.py
 # Page structure
 st.set_page_config(
@@ -30,30 +33,36 @@ opponents last matches and predict who will win""")
 
 st.markdown("""## ❗ Get started ❗ """)
 
+
 # Prompt user to enter an account_id
-user_id = st.text_input("Enter your Account ID: ")
-opps_id = st.text_input("Enter your Opponent's Account ID: ")
+account_id = st.text_input("Enter your Account ID: ")
+opps_acc_id = st.text_input("Enter your Opponent's Account ID: ")
 
-# Check if the ID is valid/exists
-# '''
-# if valid_id:
-#     st.success(f'Account ID ', account_id,' found')
-# else:
-#     st.error(f'Account ID ', account_id,' not found. Check your submission and try again')
-# '''
+# retrieve the steam32 id for both accounts
+user_id, opps_id = steam_id_finder(account_id), steam_id_finder(opps_acc_id)
 
-# we will replace this block with the actual method later
-def get_user_win_rate(account_id):
-    return account_id
-# we retrieve the user win rate for the user and the opponent
-user_wr = get_user_win_rate(user_id)
-opps_wr = get_user_win_rate(opps_id)
+#Check if the ID is valid/exists
+if user_id and opps_id is not False:
+    st.success("The ID's entered are correct")
+if user_id is False:
+    st.error(f'The account ID entered is not a valid account id, please try again')
+if opps_id is False:
+    st.error(f"The opponent's account ID is not a valid account id, please try again")
 
-# if user wins
-if user_wr > opps_wr:
-    st.write("You have a higher probability of winning")
-else:
-    st.write("The opponent has a higher probability of winning")
+# we add this as a clause that will only continue if the ids inputted are correct
+if user_id and opps_id is not False:
+    # we will replace this block with the actual method later
+    def get_user_win_rate(account_id):
+        return account_id
+    # we retrieve the user win rate for the user and the opponent
+    user_wr = get_user_win_rate(user_id)
+    opps_wr = get_user_win_rate(opps_id)
+
+    # if user wins
+    if user_wr > opps_wr:
+        st.write("You have a higher probability of winning")
+    else:
+        st.write("The opponent has a higher probability of winning")
 
 
 # user_data = get_user_data(account_id)
