@@ -92,13 +92,19 @@ def get_training_set():
 
     games = pd.DataFrame(games)
 
+
+
+    for i in range(len(games.head())):
+        if type(average_player_data(games["player"][i])) == str or type(average_player_data(games["opponent"][i])) == str:
+            games = games.drop([i]) 
+
     # get player and opponent average history
     for feature in features:
         games[f"player_{feature}"] = games["player"].apply(lambda x:average_player_data(x)[feature])
+        games[f"opponent_{feature}"] = games["opponent"].apply(lambda x:average_player_data(x)[feature])
 
-
-    print(games.head())
-    # pd.DataFrame(games).to_csv(os.path.join("data", "player_pairs_stats.csv"), mode = "w", index = False, header=True)
+    # print(games.head())
+    pd.DataFrame(games).to_csv(os.path.join("data", "player_pairs_stats.csv"), mode = "w", index = False, header=True)
         
 
 get_training_set()
