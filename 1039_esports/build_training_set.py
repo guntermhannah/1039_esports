@@ -73,19 +73,19 @@ def get_training_set():
             continue
             
         # get player account_id
-        player_account_id = str(int(new_df.iloc[0,1]))
+        player_account_id = str(int(new_df.loc[(match, False),"account_id"]))
         if len(player_account_id)<9:
             player_account_id = player_account_id + "0"*(9-len(player_account_id))
         game["player"] = player_account_id
 
         # get opponent account_id
-        opponent_account_id = str(int(new_df.iloc[1,1]))
+        opponent_account_id = str(int(new_df.loc[(match, True),"account_id"]))
         if len(opponent_account_id)<9:
             opponent_account_id = opponent_account_id + "0"*(9-len(opponent_account_id))
         game["opponent"] = opponent_account_id
 
         # get winner info
-        if new_df.iloc[0,-1] == 1:
+        if new_df.loc[(match,False),"win"] == 1:
             game["winner"] = player_account_id
         else:
             game["winner"] = opponent_account_id
@@ -97,7 +97,7 @@ def get_training_set():
                 
         games.append(game)
 
-    pd.DataFrame(games).to_csv(os.path.join("data", "player_pairs_stats.csv"), mode = "a", index = False, header=True)
+    pd.DataFrame(games).to_csv(os.path.join("data", "player_pairs_stats.csv"), mode = "w", index = False, header=True)
         
 
 get_training_set()
