@@ -53,7 +53,7 @@ def average_player_data(account_id):
 
     # we remove the columns we dont need
     player_df = player_df.drop(columns = ['game_mode', 'radiant_win', 'duration',
-                                    'match_id', 'lobby_type', 'average_rank'])
+                                    'match_id', 'lobby_type', 'hero_id', 'average_rank'])
 
     # we aggregate the results to retrieve the mean of each column
     player_df_mean = player_df.agg('mean')
@@ -62,4 +62,4 @@ def average_player_data(account_id):
 
 
 # to test the function average_player_data
-# print(average_player_data(323271155))
+#average_player_data(323271155)
