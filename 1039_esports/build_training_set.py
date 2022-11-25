@@ -113,5 +113,23 @@ def get_training_set():
     print(games_df.head())
     pd.DataFrame(games).to_csv(os.path.join("data", "player_pairs_stats.csv"), mode = "w", index = False, header=True)
         
+def remove_columns():
+    df = pd.read_csv(os.path.join("data", "player_pairs_stats.csv"))
 
-get_training_set()
+    # drop data without per min stats
+    df_columns = df.drop(columns = ["player_net_worth",
+                                    "player_hero_damage", 
+                                    "player_last_hits", 
+                                    "opponent_net_worth",
+                                    "opponent_hero_damage",
+                                    "opponent_last_hits",
+                                    ])
+
+    # drop rows with na data
+    df_na = df_columns.dropna()
+
+    return df_na
+
+df = remove_columns()
+
+df.to_csv(os.path.join("data", "player_pairs_avg_stats.csv"), mode = "w", index = False, header=True)
