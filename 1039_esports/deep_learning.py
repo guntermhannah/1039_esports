@@ -1,17 +1,21 @@
-from tensorflow.keras import Sequential, layers
 
+
+from sklearn.model_selection import train_test_split
+
+from matches_clean import clean_player_pairs_data
+
+def get_data():
+    """returns scaled train test split of data"""
+
+    # returns cleaned player pair stat data
+    df = clean_player_pairs_data()
+    
 
 def init_model():
     """instantiates, compiles, and fits an NN to the data"""
 
-    # retrieve data
-    df = pd.read_csv(os.path.join("data", "player_pairs_stats.csv"))
-    df["player_win"] = (df["player"] == df["winner"]).apply(lambda x:int(x))
-    print(df.shape)
-
     # # model architecture
     # model = Sequential()
-    # model.add(layers.Dense(20, activation = "relu", input_dim))
+    # model.add(layers.Dense(20, activation = "relu", input_dim = 18))
 
-init_model()
 
