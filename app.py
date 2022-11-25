@@ -5,6 +5,7 @@ import pandas as pd
 
 # local imports
 from scrape.steam_id_finder import steam_id_finder
+from esports.get_wl_data import Dota2Api
 
 # streamlit run app.py
 # Page structure
@@ -14,7 +15,7 @@ st.set_page_config(
     layout="centered",
     initial_sidebar_state="auto"
 )
-st.image('1039_esports/data/home_page_img.jpeg')
+st.image('esports/data/home_page_img.jpeg')
 
 
 # Sidebar
@@ -35,33 +36,44 @@ st.markdown("""## ❗ Get started ❗ """)
 
 # Prompt user to enter an account_id
 account_id = st.text_input("Enter your Account ID: ")
-opps_acc_id = st.text_input("Enter your Opponent's Account ID: ")
+opps_account_id = st.text_input("Enter your Opponent's Account ID: ")
 
-# retrieve the steam32 id for both accounts
-user_id, opps_id = steam_id_finder(account_id), steam_id_finder(opps_acc_id)
+# if account_id and opps_account_id
+if account_id and opps_account_id != '':
+    # retrieve the steam32 id for both accounts and check if they exist
+    user_id, opps_id = steam_id_finder(account_id), steam_id_finder(opps_account_id)
+    if user_id and opps_id is not False:
+        st.success("The ID's entered are correct")
+    elif user_id and opps_id is False:
+        st.error("Both account ID's are not valid, please try again")
+    elif user_id is False:
+        st.error(f'The account ID entered is not a valid account id, please try again')
+    elif opps_id is False:
+        st.error(f"The opponent's account ID is not a valid account id, please try again")
 
-#Check if the ID is valid/exists
-if user_id and opps_id is not False:
-    st.success("The ID's entered are correct")
-if user_id is False:
-    st.error(f'The account ID entered is not a valid account id, please try again')
-if opps_id is False:
-    st.error(f"The opponent's account ID is not a valid account id, please try again")
+    # if the id inputted are correct, we get their win rates
+    if user_id != '':
+        api = Dota2Api()
+        user_wr = api.get_wl_data(user_id)
+        opps_wr = api.get_wl_data(opps_id)
+        # since the method outputs 0,0 for faulty ids, we just give them an arbitrary number
+        try:
+            user_wr = user_wr['win'] / (user_wr['win'] + user_wr['lose'])
+        except Exception as e:
+            user_wr = 0.01
+        try:
+            opps_wr = user_wr['win'] / (user_wr['win'] + user_wr['lose'])
+        except Exception as e:
+            opps_wr = 0.01
 
-# we add this as a clause that will only continue if the ids inputted are correct
-if user_id and opps_id is not False:
-    # we will replace this block with the actual method later
-    def get_user_win_rate(account_id):
-        return account_id
-    # we retrieve the user win rate for the user and the opponent
-    user_wr = get_user_win_rate(user_id)
-    opps_wr = get_user_win_rate(opps_id)
+        # st.text(f'the account is is {user_wr}')
+        # st.text(f'the type is is {type(opps_wr)}')
 
-    # if user wins
-    if user_wr > opps_wr:
-        st.write("You have a higher probability of winning")
-    else:
-        st.write("The opponent has a higher probability of winning")
+        # if user wins or loses
+        if user_wr > opps_wr:
+            st.write("You have a higher probability of winning")
+        else:
+            st.write("The opponent has a higher probability of winning")
 
 
 # ~~~~~~~~~~~~ misc ~~~~~~~~~~~~~~~~
