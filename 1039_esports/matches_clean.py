@@ -79,6 +79,4 @@ def train_test_split_data():
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20)
 
     return X_train, X_test, y_train, y_test
-
-X, n, y, m = train_test_split_data()
-print(X.columns)
+    
