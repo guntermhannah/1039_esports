@@ -60,7 +60,7 @@ def clean_player_pairs_data():
     df_clean = df.dropna()
 
     # add new column to indicate player's win
-    df_clean['player_win'] = np.where(df["player"] == df["winner"], 1, 0)
+    df_clean['player_win'] = np.where(df_clean["player"] == df_clean["winner"], 1, 0)
 
     return df_clean
 
@@ -79,3 +79,6 @@ def train_test_split_data():
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20)
 
     return X_train, X_test, y_train, y_test
+
+df = clean_player_pairs_data()
+print(df.head())
