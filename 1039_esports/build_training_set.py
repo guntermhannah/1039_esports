@@ -118,3 +118,5 @@ def get_training_set():
         pd.DataFrame(game_df).to_csv(os.path.join("data", "player_pairs_avg_stats.csv"), mode = "a", index = False, header=False)
 
 get_training_set()
+
+def 
