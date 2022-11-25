@@ -31,3 +31,4 @@ termcolor
 
 # deep learning
 tensorflow
+bs4
