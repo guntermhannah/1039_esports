@@ -8,7 +8,7 @@ from esports.matches_clean import clean_player_data
 api_key = os.environ.get('API_KEY')
 
 
-def get_wl_data(self, account_id):
+def get_wl_data(account_id):
     """retrieves win/loss data for an individual player, returns dict"""
 
     url = f"https://api.opendota.com/api/players/{account_id}/wl"
