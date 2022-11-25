@@ -7,13 +7,13 @@ from transform_data import average_player_data
 
 def wrapper(x):
     if type(average_player_data(x)) == str:
-        return {'deaths_per_min':None, 
-                'assists_per_min': None, 
-                'tower_damage_per_min': None, 
-                'xp_per_min': None, 
-                'gold_per_min': None, 
+        return {'deaths_per_min':None,
+                'assists_per_min': None,
+                'tower_damage_per_min': None,
+                'xp_per_min': None,
+                'gold_per_min': None,
                 'kills_per_min': None,
-                'hero_damage_per_min': None, 
+                'hero_damage_per_min': None,
                 'last_hits_per_min': None
         }
     else:
@@ -32,21 +32,21 @@ def get_training_set():
     df = player_data.merge(matches_data)
 
     # relevant features
-    features = ['deaths_per_min', 
-                'assists_per_min', 
-                'tower_damage_per_min', 
-                'xp_per_min', 
-                'gold_per_min', 
+    features = ['deaths_per_min',
+                'assists_per_min',
+                'tower_damage_per_min',
+                'xp_per_min',
+                'gold_per_min',
                 'kills_per_min',
-                'hero_damage_per_min', 
-                'last_hits_per_min', 
+                'hero_damage_per_min',
+                'last_hits_per_min',
     ]
 
 
     # group player data by match_id, take the first account of winning and losing teams
     tmp = df[1000:].groupby(["match_id", "isRadiant"]).first()
 
-    
+
     # create df of pairs of winners and losers
     for match, new_df in tmp.groupby(level=[0]):
         game = {"match_id": 0,
@@ -78,7 +78,7 @@ def get_training_set():
         game["match_id"] = match
         if len(new_df) !=2:
             continue
-            
+
         # get player account_id
         player_account_id = str(int(new_df.loc[(match, False),"account_id"]))
         if len(player_account_id)<9:
@@ -96,15 +96,14 @@ def get_training_set():
             game["winner"] = player_account_id
         else:
             game["winner"] = opponent_account_id
-                
-        game_df = pd.DataFrame([game.values()], columns = game.keys())
-        
-        
 
+        game_df = pd.DataFrame([game.values()], columns = game.keys())
+
+        
         # drop data without per min stats
         game_df = game_df.drop(columns = ["player_net_worth",
-                                    "player_hero_damage", 
-                                    "player_last_hits", 
+                                    "player_hero_damage",
+                                    "player_last_hits",
                                     "opponent_net_worth",
                                     "opponent_hero_damage",
                                     "opponent_last_hits",
