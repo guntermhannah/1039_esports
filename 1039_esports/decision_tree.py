@@ -7,20 +7,15 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import RobustScaler
 from sklearn.metrics import accuracy_score
 
+from matches_clean import train_test_split
+
 def decision_tree(max_depth=None, min_samples_split=2, min_samples_leaf=1, max_features=None):
     """returns tree model fit to data"""
 
-    # retrieve data
-    df = pd.read_csv(os.path.join("data", "player_pairs_avg_stats.csv"))
-    df["player_win"] = (df["player"] == df["winner"]).apply(lambda x:int(x))
+    # train test split of data
+    X_train, X_test, y_train, y_test = train_test_split()
 
-    X = df.drop(columns = ["match_id","player", "opponent","winner", "player_win"])
-    y = df["player_win"]
-
-    # train test split
-    X_train, X_test, y_train, y_test = train_test_split(X, y)
-
-    # scaling
+    # scale the data
     scaler = RobustScaler()
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
