@@ -86,6 +86,8 @@ class Dota2Api():
 
         player_df = player_data[[stat for stat in player_keys]]
 
+        player_df = player_df.dropna()
+
         # we also want to transform some data to usable data like kills to kills per min
         keys_to_transform = ['kills', 'deaths', 'assists', 'hero_damage', 'tower_damage',
                             'last_hits']
