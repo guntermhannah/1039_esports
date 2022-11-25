@@ -3,20 +3,7 @@ import pandas as pd
 import os
 
 from matches_clean import clean_player_data
-
-def get_wl_data(account_id):
-    """retrieves win/loss data for an individual player, returns dict"""
-
-    url = f"https://api.opendota.com/api/players/{account_id}/wl"
-    
-    response = requests.get(url)
-    
-    if response.status_code != 200:
-        return {"win":0, "lose": 0}
-
-    data = response.json()
-
-    return data
+from get_data import get_wl_data
 
 
 def build_wl_dataset():
@@ -45,7 +32,7 @@ def get_match_pairs():
 
     # group player data by match_id, take the first account of winning and losing teams
     tmp = player_data.groupby(["match_id", "isRadiant"]).first()
-    
+
     #create df of pairs of winners and losers
     games = []
     for match, new_df in tmp.groupby(level=[0]):
@@ -56,7 +43,7 @@ def get_match_pairs():
         game["match_id"] = match
         if len(new_df) !=2:
             continue
-        
+
         # get player account_id
         player_account_id = str(int(new_df.iloc[0,1]))
         if len(player_account_id)<9:

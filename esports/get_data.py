@@ -100,3 +100,19 @@ class Dota2Api():
             player_df = player_df.rename(columns={key: f'{key}_per_min'})
 
         return player_df
+
+
+    def get_wl_data(account_id):
+        """retrieves win/loss data for an individual player, returns dict"""
+
+        url = f"https://api.opendota.com/api/players/{account_id}/wl"
+        params = {"api_key": api_key}
+
+        response = requests.get(url, params)
+
+        if response.status_code != 200:
+            return {"win":0, "lose": 0}
+
+        data = response.json()
+
+        return data

@@ -11,7 +11,7 @@ def transform_data():
     # retrieve matches data, append to matches csv
     matches_data = api.fetch_matches()
 
-    matches_data.to_csv(os.path.join("1039_esports", "data", "matches.csv"),
+    matches_data.to_csv(os.path.join("esports", "data", "matches.csv"),
                         mode = "a", index = False, header=False)
 
     # loop through the matches data to get specific match infromation
@@ -25,7 +25,7 @@ def transform_data():
             continue
 
         # append player data to players
-        player_stats_data.to_csv(os.path.join("1039_esports", "data", "players.csv"),
+        player_stats_data.to_csv(os.path.join("esports", "data", "players.csv"),
                                                             mode = "a", index = False,
                                                             header=False)
 
@@ -41,7 +41,7 @@ def transform_player_data(account_id):
     player_df = api.get_player_data(account_id)
 
     # append player data to players
-    player_df.to_csv(os.path.join("1039_esports", "data", "single_player_data.csv"),
+    player_df.to_csv(os.path.join("esports", "data", "single_player_data.csv"),
                                                         mode = "a", index = False,
                                                         header=False)
 
