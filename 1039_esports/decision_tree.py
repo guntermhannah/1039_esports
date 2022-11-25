@@ -24,8 +24,6 @@ def decision_tree(max_depth=None, min_samples_split=2, min_samples_leaf=1, max_f
                                 min_samples_leaf=min_samples_leaf, max_features=max_features)
     tree.fit(X_train_scaled, y_train)
 
-    y_pred = tree.predict(X_test_scaled)
-
-    return accuracy_score(y_pred, y_test)
+    return tree
 
 print(decision_tree()) 
