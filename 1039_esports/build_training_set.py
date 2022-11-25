@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import requests
 
 from matches_clean import clean_player_data, clean_matches_data
 from transform_data import average_player_data
@@ -91,19 +92,25 @@ def get_training_set():
         games.append(game)
 
     games = pd.DataFrame(games)
+    
+    print(games["player"])
+    # # removing matches where there is no average player data for a player or opponent
 
-    # removing matches where there is no average player data for a player or opponent
-    for i in range(len(games.head())):
-        if type(average_player_data(games["player"][i])) == str or type(average_player_data(games["opponent"][i])) == str:
-            games = games.drop([i]) 
+    
+    # url = f"https://api.opendota.com/api/players/{account_id}/recentMatches"
+
+
+    # for i in range(len(games.head())):
+    #     if type(average_player_data(games["player"][i])) == str or type(average_player_data(games["opponent"][i])) == str:
+    #         games.drop([i], inplace = True) 
 
     # get player and opponent average history
-    for feature in features:
-        games[f"player_{feature}"] = games["player"].apply(lambda x:average_player_data(x)[feature])
-        games[f"opponent_{feature}"] = games["opponent"].apply(lambda x:average_player_data(x)[feature])
+    # for feature in features:
+    #     games[f"player_{feature}"] = games["player"].apply(lambda x:average_player_data(x)[feature])
+    #     games[f"opponent_{feature}"] = games["opponent"].apply(lambda x:average_player_data(x)[feature])
 
-    # print(games.head())
-    pd.DataFrame(games).to_csv(os.path.join("data", "player_pairs_stats.csv"), mode = "w", index = False, header=True)
+    # # print(games.head())
+    # pd.DataFrame(games).to_csv(os.path.join("data", "player_pairs_stats.csv"), mode = "w", index = False, header=True)
         
 
 get_training_set()
