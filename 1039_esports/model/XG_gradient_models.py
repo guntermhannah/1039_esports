@@ -2,6 +2,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import GradientBoostingRegressor
 from xgboost import XGBRegressor
 from matplotlib.pyplot import plt
+from sklearn.model_selection import cross_val_score
+from sklearn.metrics import mean_squared_error
 
 from matches_clean import train_test_split_data
 
@@ -21,19 +23,34 @@ def XGBoost_model():
         eval_metric=['rmse'],
         early_stopping_rounds=10)
 
+    # Training score
+    score = xgb.score(X_train, y_train)
+    print(score)
+
+    #Mean cross-val score
+    scores = cross_val_score(xgb, X_train, y_train, cv=10)
+    print(scores.mean())
+
+    # Predictions
+    y_pred = xgb.predict(X_test)
+
+    # Print the MSE
+    mse = mean_squared_error(X_test, y_pred)
+    print(mse)
+
+    # Print the RMSE
+    print((mse**(1/2.0)))
+
     # Print results
     results = xgb.evals_result()
     print(min(results['validation_0']['rmse']))
 
-    # Figure showing the RMSE of the train and val
-    epochs = len(results['validation_0']["rmse"])
-    x_axis = range(0, epochs)
-
-    fig, ax = plt.subplots()
-    ax.plot(x_axis, results['validation_0']['rmse'], label='Train')
-    ax.plot(x_axis, results['validation_1']['rmse'], label='Val')
-    ax.legend(); plt.ylabel('RMSE'); plt.title('XGBoost')
-    print(fig)
+    x_ax = range(len(y_test))
+    plt.plot(x_ax, y_test, label="original")
+    plt.plot(x_ax, y_pred, label="predicted")
+    plt.title("XGBoost")
+    plt.legend()
+    print(plt.show())
 
     pass
 
@@ -50,6 +67,7 @@ def gradient_boost_model():
 
     gb_model.predict(X_test[1:2])
 
+    # Training score
     score = gb_model.score(X_test, y_test)
 
     return score
