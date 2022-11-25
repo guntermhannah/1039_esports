@@ -56,6 +56,9 @@ def clean_player_pairs_data():
     # drop duplicates
     df_clean = df.drop_duplicates()
 
+    # drop na
+    df_clean = df.dropna()
+
     # add new column to indicate player's win
     df_clean['player_win'] = np.where(df["player"] == df["winner"], 1, 0)
 
