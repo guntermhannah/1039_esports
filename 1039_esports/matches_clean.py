@@ -63,6 +63,9 @@ def clean_player_pairs_data():
 
 
 def train_test_split_data():
+    """Drops id columns, roshans killed, and obs placed from player pairs avg
+    stats df. Splits data into train/test split."""
+
     df = clean_player_pairs_data()
     X = df.drop(columns=[
         'match_id', 'player', 'opponent', 'winner', 'player_roshans_killed',
