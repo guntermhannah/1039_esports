@@ -1,14 +1,19 @@
 import pandas as pd
 import os
 import numpy as np
+from sklearn.metrics import accuracy_score
 
 def get_player_ratio(account_id:int)->float:
 
     # Get the data for player_pairs and wl_data
     df_wl = pd.read_csv(os.path.join('data', 'wl_data.csv'))
 
-    # Remove rows where total == 0
+    ###
+    #row = df_wl[df_wl['account_id'] == account_id]
+    #print(int(row['total']))
+
     df_wl = df_wl[df_wl['total'] != 0]
+    df_wl.drop_duplicates(subset=['account_id'], inplace=True)
 
     # Check if account_id is in the wl_data.csv
     if account_id in df_wl['account_id'].values:
@@ -16,7 +21,7 @@ def get_player_ratio(account_id:int)->float:
         row = df_wl[df_wl['account_id'] == account_id]
         # Calculate ratio
         ratio = int(row['wins']) / int(row['total'])
-        return float(ratio)
+        return ratio
 
     # Return -1.0 value if not found in csv
     return -1.0
@@ -30,6 +35,9 @@ def column_e():
     y_pred = []
     y_true = []
 
+    #player_list = []
+    #opponent_list = []
+
     for row in range(0, len(df_pairs)):
 
         # Get the account_id of player and opponent
@@ -41,6 +49,10 @@ def column_e():
         player_ratio = get_player_ratio(player_id)
         opponent_ratio = get_player_ratio(opponent_id)
 
+        #player_list.append(player_ratio)
+        #opponent_list.append(opponent_ratio)
+        #test = pd.DataFrame({'players': player_list, 'opponents':opponent_list})
+
         # Find prediction only if both players have ratio from wl_data
         if (player_ratio > 0) and (opponent_ratio > 0):
 
@@ -50,18 +62,17 @@ def column_e():
             else:
                 y_pred.append(0)
 
-            y_pred = np.array([y_pred])
-
             if (player_id == winner_id):
                 y_true.append(1)
             else:
                 y_true.append(0)
 
-            y_true = np.array([y_true])
-
         else:
             pass
 
-    pass
+    # Determine accuary
+    accuracy = accuracy_score(y_true, y_pred)
+
+    return accuracy
 
 column_e()
