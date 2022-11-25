@@ -9,6 +9,8 @@ def get_data():
 
     # returns cleaned player pair stat data
     df = clean_player_pairs_data()
+
+    
     
 
 def init_model():
