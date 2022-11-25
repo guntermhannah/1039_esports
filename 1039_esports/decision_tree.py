@@ -11,7 +11,7 @@ def decision_tree(max_depth=None, min_samples_split=2, min_samples_leaf=1, max_f
     """returns tree model fit to data"""
 
     # retrieve data
-    df = pd.read_csv(os.path.join("data", "player_pairs_stats.csv"))
+    df = pd.read_csv(os.path.join("data", "player_pairs_avg_stats.csv"))
     df["player_win"] = (df["player"] == df["winner"]).apply(lambda x:int(x))
 
     X = df.drop(columns = ["match_id","player", "opponent","winner", "player_win"])
