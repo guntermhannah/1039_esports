@@ -102,7 +102,7 @@ class Dota2Api():
         return player_df
 
 
-    def get_wl_data(account_id):
+    def get_wl_data(self, account_id):
         """retrieves win/loss data for an individual player, returns dict"""
 
         url = f"https://api.opendota.com/api/players/{account_id}/wl"

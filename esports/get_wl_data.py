@@ -2,8 +2,10 @@ import requests
 import pandas as pd
 import os
 
-from matches_clean import clean_player_data
-from get_data import get_wl_data
+from esports.matches_clean import clean_player_data
+from esports.get_data import Dota2Api
+
+api = Dota2Api()
 
 
 def build_wl_dataset():
@@ -16,7 +18,7 @@ def build_wl_dataset():
         account_id = str(int(player_data.iloc[i,2]))
         if len(account_id)<9:
             account_id = account_id + "0"*(9-len(account_id))
-        data = get_wl_data(account_id)
+        data = api.get_wl_data(account_id)
         win_loss = [account_id, data["win"], data["lose"], data["win"]+data["lose"]]
         all_players.append(win_loss)
 
@@ -63,7 +65,7 @@ def get_match_pairs():
             game["winner"] = opponent_account_id
         games.append(game)
 
-    pd.DataFrame(games).to_csv(os.path.join("data", "player_pairs.csv"), mode = "a", index = False, header=True)
+    pd.DataFrame(games).to_csv(os.path.join("esports", "data", "player_pairs.csv"), mode = "a", index = False, header=True)
 
 
 get_match_pairs()

@@ -28,7 +28,7 @@ def clean_player_data():
     """Cleans the players data in the players.csv file, returns a clean dataframe.
     Drops any player data that does not have corresponding match in matches.csv"""
 
-    df = pd.read_csv(os.path.join("data", "players.csv"))
+    df = pd.read_csv(os.path.join("esports", "data", "players.csv"))
 
     # drop duplicates
     df_clean = df.drop_duplicates()
