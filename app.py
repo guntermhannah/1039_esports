@@ -5,7 +5,7 @@ import pandas as pd
 
 # local imports
 from scrape.steam_id_finder import steam_id_finder
-from esports.get_wl_data import Dota2Api
+from esports.get_wl_data import get_wl_data
 
 # streamlit run app.py
 # Page structure
@@ -53,9 +53,8 @@ if account_id and opps_account_id != '':
 
     # if the id inputted are correct, we get their win rates
     if user_id != '':
-        api = Dota2Api()
-        user_wr = api.get_wl_data(user_id)
-        opps_wr = api.get_wl_data(opps_id)
+        user_wr = get_wl_data(user_id)
+        opps_wr = get_wl_data(opps_id)
         # since the method outputs 0,0 for faulty ids, we just give them an arbitrary number
         try:
             user_wr = user_wr['win'] / (user_wr['win'] + user_wr['lose'])
