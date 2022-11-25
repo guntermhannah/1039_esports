@@ -72,7 +72,7 @@ def train_test_split_data():
     df = clean_player_pairs_data()
     X = df.drop(columns=[
         'match_id', 'player', 'opponent', 'winner', 'player_roshans_killed',
-        'player_obs_placed', 'opponent_roshans_killed', 'opponent_obs_placed'
+        'player_obs_placed', 'opponent_roshans_killed', 'opponent_obs_placed', 'player_win'
     ])
     y = df['player_win']
 
@@ -80,5 +80,5 @@ def train_test_split_data():
 
     return X_train, X_test, y_train, y_test
 
-df = clean_player_pairs_data()
-print(df.head())
+X, n, y, m = train_test_split_data()
+print(X.columns)
