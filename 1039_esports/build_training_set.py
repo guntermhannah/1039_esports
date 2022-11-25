@@ -1,9 +1,9 @@
 import pandas as pd
 import os
-import requests
 
 from matches_clean import clean_player_data, clean_matches_data
 from transform_data import average_player_data
+
 
 def wrapper(x):
     if type(average_player_data(x)) == str:
@@ -41,10 +41,18 @@ def get_training_set():
                 'hero_damage_per_min', 
                 'last_hits_per_min', 
     ]
+    
+    # clean and process wl data
+    wl_data = pd.read_csv(os.path.join("data", "wl_data.csv"))
+    wl_clean = wl_data[wl_data["wins"] != "wins"]
+    wl_clean = wl_clean[wl_clean["total"] != "0"]
+    wl_clean = wl_clean.drop_duplicates(subset="account_id", keep="last")
+    wl_clean["account_id"] = wl_clean["account_id"].astype(int)
+    wl_clean["win_ratio"] = wl_clean["wins"].astype(int)/wl_clean["total"].astype(int)
 
 
     # group player data by match_id, take the first account of winning and losing teams
-    tmp = df[2000:].groupby(["match_id", "isRadiant"]).first()
+    tmp = df[2200:].groupby(["match_id", "isRadiant"]).first()
 
     
     # create df of pairs of winners and losers
@@ -114,9 +122,35 @@ def get_training_set():
         for feature in features:
             game_df[f"player_{feature}"] = game_df["player"].apply(lambda x:wrapper(x)[feature])
             game_df[f"opponent_{feature}"] = game_df["opponent"].apply(lambda x:wrapper(x)[feature])
+        
+        # merge wl data with player pair data
+        merged = game_df.merge(wl_clean[["account_id", "win_ratio"]], left_on = "player", right_on = "account_id")
+        merged["player_win_ratio"] = merged["win_ratio"]
+        merged = merged.drop(columns= ["account_id", "win_ratio"])
+        merged = merged.merge(wl_clean[["account_id", "win_ratio"]], left_on = "opponent", right_on = "account_id")
+        merged["opponent_win_ratio"] = merged["win_ratio"]
+        merged = merged.drop(columns= ["account_id", "win_ratio"])
+
 
         pd.DataFrame(game_df).to_csv(os.path.join("data", "player_pairs_avg_stats.csv"), mode = "a", index = False, header=False)
 
+
 get_training_set()
 
-def 
+def add_wl_data():
+    """adds a wl column for player and opponent to training data"""
+
+    # get player pair avg stats data
+    df = pd.read_csv(os.path.join("data","player_pairs_avg_stats.csv"))
+    df = df.dropna()
+
+
+    # merge wl data with player pair data
+    merged = df.merge(wl_clean[["account_id", "win_ratio"]], left_on = "player", right_on = "account_id")
+    merged["player_win_ratio"] = merged["win_ratio"]
+    merged = merged.drop(columns= ["account_id", "win_ratio"])
+    merged = merged.merge(wl_clean[["account_id", "win_ratio"]], left_on = "opponent", right_on = "account_id")
+    merged["opponent_win_ratio"] = merged["win_ratio"]
+    merged = merged.drop(columns= ["account_id", "win_ratio"])
+
+    merged.to_csv(os.path.join("data","player_pairs_avg_stats.csv"), mode = "w", index = False, header = True)
