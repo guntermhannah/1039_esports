@@ -22,7 +22,7 @@ def get_wl_data(account_id):
 def build_wl_dataset():
     """builds csv file of individual player win/loss data"""
 
-    player_pairs = pd.read_csv(os.path.join("data","player_pairs.csv"))
+    player_pairs = pd.read_csv(os.path.join("data","player_pairs_avg_stats.csv"))
 
     for i in range(len(player_pairs)):
         #get player wl data
@@ -37,7 +37,7 @@ def build_wl_dataset():
         df.to_csv(os.path.join("data", "wl_data.csv"), mode = "a", index = False, header=False)
 
         #get opponent wl data
-        account_id = str(int(player_pairs.iloc[i,2]))
+        account_id = str(int(player_pairs.iloc[i,10]))
         if len(account_id)<9:
             account_id = account_id + "0"*(9-len(account_id))
         data = get_wl_data(account_id)
