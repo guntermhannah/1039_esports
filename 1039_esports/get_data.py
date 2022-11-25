@@ -64,7 +64,12 @@ class Dota2Api():
         # making the api request to get the json data of the last 20 games
         url_ext = self.url + f'/players/{account_id}/recentMatches'
         params = {"api_key": api_key}
-        response = requests.get(url_ext, params).json()
+        response = requests.get(url_ext, params)
+
+        if response.status_code != 200:
+            return ""
+
+        response = response.json()
 
         # deciding the keys we are going to use
         player_keys = ['match_id', 'radiant_win', 'duration', 'game_mode', 'lobby_type',
@@ -75,7 +80,13 @@ class Dota2Api():
         # turning the response into a dataframe and keeping only the keys we need
         player_data = pd.DataFrame(response)
 
+        for stat in player_keys:
+            if stat not in player_data.columns:
+                return ""
+
         player_df = player_data[[stat for stat in player_keys]]
+
+        player_df = player_df.dropna()
 
         # we also want to transform some data to usable data like kills to kills per min
         keys_to_transform = ['kills', 'deaths', 'assists', 'hero_damage', 'tower_damage',
