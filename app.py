@@ -71,6 +71,8 @@ if account_id and opps_account_id != '':
         # if user wins or loses
         if user_wr > opps_wr:
             st.write("You have a higher probability of winning")
+        elif user_wr == opps_wr:
+            st.write("You both have the same probability of winning")
         else:
             st.write("The opponent has a higher probability of winning")
 
