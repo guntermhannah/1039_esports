@@ -1,11 +1,29 @@
 import pandas as pd
 import os
+import requests
 
 from matches_clean import clean_player_data, clean_matches_data
+from transform_data import average_player_data
+
+def wrapper(x):
+    if type(average_player_data(x)) == str:
+        return {'deaths_per_min':None, 
+                'assists_per_min': None, 
+                'tower_damage_per_min': None, 
+                'xp_per_min': None, 
+                'gold_per_min': None, 
+                'kills_per_min': None,
+                'hero_damage_per_min': None, 
+                'last_hits_per_min': None
+        }
+    else:
+        return average_player_data(x)
 
 
 def get_training_set():
-    """returns dataframe of match_ids, with player account_id, opponent account_id, and who won"""
+    """returns dataframe of match_ids, with player and opponent account ids,
+     winner, and player and opponent average stats over last 20 games"""
+
     # retrieve player data and match data
     player_data = clean_player_data()
     matches_data = clean_matches_data()
@@ -13,31 +31,23 @@ def get_training_set():
     # merge datasets
     df = player_data.merge(matches_data)
 
-    # feature manipulation -- creating per min stats
-    df["deaths_per_min"] = df["deaths"]/df["duration"]
-    df["kills_per_min"] = df["kills"]/df["duration"]
-    df["assists_per_min"] = df["assists"]/df["duration"]
-
     # relevant features
     features = ['deaths_per_min', 
                 'assists_per_min', 
-                'tower_damage', 
+                'tower_damage_per_min', 
                 'xp_per_min', 
                 'gold_per_min', 
-                'net_worth',
                 'kills_per_min',
-                'hero_damage', 
-                'last_hits', 
-                'hero_id',
-                'roshans_killed', 
-                'obs_placed'
+                'hero_damage_per_min', 
+                'last_hits_per_min', 
     ]
 
 
     # group player data by match_id, take the first account of winning and losing teams
-    tmp = df.groupby(["match_id", "isRadiant"]).first()
+    tmp = df[:1000].groupby(["match_id", "isRadiant"]).first()
+
     
-    #create df of pairs of winners and losers
+    # create df of pairs of winners and losers
     games = []
     for match, new_df in tmp.groupby(level=[0]):
         game = {"match_id": 0,
@@ -51,7 +61,6 @@ def get_training_set():
                 "player_kills_per_min":0,
                 "player_hero_damage":0,
                 "player_last_hits":0,
-                "player_hero_id":0,
                 "player_roshans_killed":0,
                 "player_obs_placed":0,
                 "opponent": 0,
@@ -64,7 +73,6 @@ def get_training_set():
                 "opponent_kills_per_min":0,
                 "opponent_hero_damage":0,
                 "opponent_last_hits":0,
-                "opponent_hero_id":0,
                 "opponent_roshans_killed":0,
                 "opponent_obs_placed":0,
                 "winner": 0}
@@ -89,15 +97,39 @@ def get_training_set():
             game["winner"] = player_account_id
         else:
             game["winner"] = opponent_account_id
-            
-        # get player and opponent stats
-        for feature in features:
-            game[f"player_{feature}"] = new_df.loc[(match,False), feature]
-            game[f"opponent_{feature}"] = new_df.loc[(match,True), feature]
                 
         games.append(game)
 
+    games = pd.DataFrame(games)
+    
+
+    # get player and opponent average history
+    for feature in features:
+        games[f"player_{feature}"] = games["player"].apply(lambda x:wrapper(x)[feature])
+        games[f"opponent_{feature}"] = games["opponent"].apply(lambda x:wrapper(x)[feature])
+    
+    games_df = games.dropna()
+
+    print(games_df.head())
     pd.DataFrame(games).to_csv(os.path.join("data", "player_pairs_stats.csv"), mode = "w", index = False, header=True)
         
+def remove_columns():
+    df = pd.read_csv(os.path.join("data", "player_pairs_stats.csv"))
 
-get_training_set()
+    # drop data without per min stats
+    df_columns = df.drop(columns = ["player_net_worth",
+                                    "player_hero_damage", 
+                                    "player_last_hits", 
+                                    "opponent_net_worth",
+                                    "opponent_hero_damage",
+                                    "opponent_last_hits",
+                                    ])
+
+    # drop rows with na data
+    df_na = df_columns.dropna()
+
+    return df_na
+
+df = remove_columns()
+
+df.to_csv(os.path.join("data", "player_pairs_avg_stats.csv"), mode = "w", index = False, header=True)
