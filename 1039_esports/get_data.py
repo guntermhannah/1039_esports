@@ -64,7 +64,8 @@ class Dota2Api():
         # making the api request to get the json data of the last 20 games
         url_ext = self.url + f'/players/{account_id}/recentMatches'
         params = {"api_key": api_key}
-        response = requests.get(url_ext, params)
+        # response = requests.get(url_ext, params)
+        response = requests.get(url_ext)
 
         if response.status_code != 200:
             return ""
