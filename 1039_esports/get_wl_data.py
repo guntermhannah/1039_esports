@@ -1,6 +1,7 @@
 import requests
 import pandas as pd
 import os
+import time
 
 from matches_clean import clean_player_data
 
@@ -46,6 +47,8 @@ def build_wl_dataset():
         df = pd.DataFrame([win_loss.values()], columns = win_loss.keys())
         
         df.to_csv(os.path.join("data", "wl_data.csv"), mode = "a", index = False, header=False)
+
+        time.sleep(1)
 
 build_wl_dataset()
 
