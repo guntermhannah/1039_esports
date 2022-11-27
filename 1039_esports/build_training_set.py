@@ -59,8 +59,9 @@ def get_training_set():
     ]
 
     # group player data by match_id, take the first account of winning and losing teams
-    tmp = df[3500:].groupby(["match_id", "isRadiant"]).first()
+    tmp = df[4000:].groupby(["match_id", "isRadiant"]).first()
 
+    counter = 0
     # create df of pairs of winners and losers
     for match, new_df in tmp.groupby(level=[0]):
         game = {"match_id": 0,
@@ -148,6 +149,9 @@ def get_training_set():
 
         game_df.to_csv(os.path.join("data", "player_pairs_avg_stats.csv"), mode = "a", index = False, header=False)
 
+        counter += 1
+
+        print(f"Added {counter} records")
         time.sleep(4)
 
 
