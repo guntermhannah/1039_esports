@@ -7,7 +7,6 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
-from sklearn.model_selection import cross_val_score
 from sklearn.svm import SVC
 from xgboost import XGBClassifier
 
@@ -28,7 +27,11 @@ def log_model():
     model.fit(X_train_scaled, y_train)
     y_pred = model.predict(X_test_scaled)
     accuracy = accuracy_score(y_test, y_pred)
-    return accuracy
+
+    y_pred_train = model.predict(X_train_scaled)
+    training_accuracy = accuracy_score(y_train, y_pred_train)
+
+    return training_accuracy, accuracy
 
 
 # Decision Tree Model
@@ -37,7 +40,11 @@ def dt_model():
     model.fit(X_train_scaled, y_train)
     y_pred = model.predict(X_test_scaled)
     accuracy = accuracy_score(y_test, y_pred)
-    return accuracy
+
+    y_pred_train = model.predict(X_train_scaled)
+    training_accuracy = accuracy_score(y_train, y_pred_train)
+
+    return training_accuracy, accuracy
 
 
 # Random Forest Model
@@ -57,7 +64,11 @@ def rf_model():
     model.fit(X_train_scaled, y_train)
     y_pred = model.predict(X_test_scaled)
     accuracy = accuracy_score(y_test, y_pred)
-    return accuracy
+
+    y_pred_train = model.predict(X_train_scaled)
+    training_accuracy = accuracy_score(y_train, y_pred_train)
+
+    return training_accuracy, accuracy
 
 
 # Bagged Decision Tree
@@ -68,7 +79,11 @@ def bagged_tree():
     bagged_model.fit(X_train_scaled, y_train)
     y_pred = bagged_model.predict(X_test_scaled)
     accuracy = accuracy_score(y_test, y_pred)
-    return accuracy
+
+    y_pred_train = bagged_model.predict(X_train_scaled)
+    training_accuracy = accuracy_score(y_train, y_pred_train)
+
+    return training_accuracy, accuracy
 
 
 # Bagged KNN
@@ -79,7 +94,11 @@ def bagged_knn():
     bagged_model.fit(X_train_scaled, y_train)
     y_pred = bagged_model.predict(X_test_scaled)
     accuracy = accuracy_score(y_test, y_pred)
-    return accuracy
+
+    y_pred_train = bagged_model.predict(X_train_scaled)
+    training_accuracy = accuracy_score(y_train, y_pred_train)
+
+    return training_accuracy, accuracy
 
 
 # Gradient Boosting Classifier
@@ -89,7 +108,11 @@ def gb_model():
     model.fit(X_train_scaled, y_train)
     y_pred = model.predict(X_test_scaled)
     accuracy = accuracy_score(y_test, y_pred)
-    return accuracy
+
+    y_pred_train = model.predict(X_train_scaled)
+    training_accuracy = accuracy_score(y_train, y_pred_train)
+
+    return training_accuracy, accuracy
 
 
 # Xtreme Gradient Boosting
@@ -99,7 +122,11 @@ def xgb_model():
     model.fit(X_train_scaled, y_train)
     y_pred = model.predict(X_test_scaled)
     accuracy = accuracy_score(y_test, y_pred)
-    return accuracy
+
+    y_pred_train = model.predict(X_train_scaled)
+    training_accuracy = accuracy_score(y_train, y_pred_train)
+
+    return training_accuracy, accuracy
 
 
 # Support Vector Machine
@@ -108,7 +135,11 @@ def svm_model():
     model.fit(X_train_scaled, y_train)
     y_pred = model.predict(X_test_scaled)
     accuracy = accuracy_score(y_test, y_pred)
-    return accuracy
+
+    y_pred_train = model.predict(X_train_scaled)
+    training_accuracy = accuracy_score(y_train, y_pred_train)
+
+    return training_accuracy, accuracy
 
 
 # Simple Stacking
@@ -123,9 +154,14 @@ def simple_stacking():
     voting_model.fit(X_train_scaled, y_train)
     y_pred = voting_model.predict(X_test_scaled)
     accuracy = accuracy_score(y_test, y_pred)
-    return accuracy
+
+    y_pred_train = voting_model.predict(X_train_scaled)
+    training_accuracy = accuracy_score(y_train, y_pred_train)
+
+    return training_accuracy, accuracy
 
 
+# Simple Stacking with 3 Classifiers
 def simple_stacking_2():
     rf_model = RandomForestClassifier()
     log_model = LogisticRegression()
@@ -138,7 +174,11 @@ def simple_stacking_2():
     voting_model.fit(X_train_scaled, y_train)
     y_pred = voting_model.predict(X_test_scaled)
     accuracy = accuracy_score(y_test, y_pred)
-    return accuracy
+
+    y_pred_train = voting_model.predict(X_train_scaled)
+    training_accuracy = accuracy_score(y_train, y_pred_train)
+
+    return training_accuracy, accuracy
 
 
 # Multi-layer Stacking
@@ -152,10 +192,14 @@ def ml_stacking():
     ensemble.fit(X_train_scaled, y_train)
     y_pred = ensemble.predict(X_test_scaled)
     accuracy = accuracy_score(y_test, y_pred)
-    return accuracy
+
+    y_pred_train = ensemble.predict(X_train_scaled)
+    training_accuracy = accuracy_score(y_train, y_pred_train)
+
+    return training_accuracy, accuracy
 
 
-print("cross validiation scores, accuracy scores:")
+print("accuracy scores: training, testing:")
 print("logistic regression: ", log_model())
 print("decision tree:", dt_model())
 print("random forest: ", rf_model())
