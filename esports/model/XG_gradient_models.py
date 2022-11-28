@@ -5,13 +5,14 @@ from esports.matches_clean import train_test_split_data
 import pandas as pd
 pd.options.mode.chained_assignment = None  # default='warn'
 
-def XGBoost_model(params):
+def XGBoost_model():
 
-    xgb = XGBClassifier(min_child_weight=params['min_child_weight'],
+    xgb = XGBClassifier()
+    '''xgb = XGBClassifier(min_child_weight=params['min_child_weight'],
                         gamma=params['gamma'],
                         subsample=params['subsample'],
                         colsample_bytree=params['colsample_bytree'],
-                        max_depth=params['max_depth'])
+                        max_depth=params['max_depth'])'''
 
     X_train, X_test, y_train, y_test = train_test_split_data()
     xgb.fit(X_train, y_train)
@@ -90,6 +91,6 @@ def grid_search_grad():
     return gsearch.best_params_
 
 #print(grid_search_XGB())
-#print(XGBoost_model(grid_search_XGB()))
+print(XGBoost_model())
 #print(grid_search_grad())
 print(gradient_boost_model(grid_search_grad()))
