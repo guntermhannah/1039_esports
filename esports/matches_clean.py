@@ -51,7 +51,8 @@ def clean_player_pairs_data():
     file, returns a clean dataframe."""
 
     # load csv and convert to DataFrame
-    df = pd.read_csv(os.path.join("esports", "data", "player_pairs_avg_stats.csv"))
+    df = pd.read_csv(
+        os.path.join("esports", "data", "player_pairs_avg_stats.csv"))
 
     # drop duplicates
     df_clean = df.drop_duplicates()
@@ -60,7 +61,8 @@ def clean_player_pairs_data():
     df_clean = df.dropna()
 
     # add new column to indicate player's win
-    df_clean['player_win'] = np.where(df_clean["player"] == df_clean["winner"], 1, 0)
+    df_clean['player_win'] = np.where(df_clean["player"] == df_clean["winner"],
+                                      1, 0)
 
     return df_clean
 
@@ -72,7 +74,8 @@ def train_test_split_data():
     df = clean_player_pairs_data()
     X = df.drop(columns=[
         'match_id', 'player', 'opponent', 'winner', 'player_roshans_killed',
-        'player_obs_placed', 'opponent_roshans_killed', 'opponent_obs_placed', 'player_win'
+        'player_obs_placed', 'opponent_roshans_killed', 'opponent_obs_placed',
+        'player_win', 'player_tower_damage', 'opponent_tower_damage'
     ])
     y = df['player_win']
 
