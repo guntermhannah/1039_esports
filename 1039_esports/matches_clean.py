@@ -74,7 +74,7 @@ def train_test_split_data():
     X = df.drop(columns=[
         'match_id', 'player', 'opponent', 'winner', 'player_roshans_killed',
         'player_obs_placed', 'opponent_roshans_killed', 'opponent_obs_placed',
-        'player_win'
+        'player_win', 'player_tower_damage', 'opponent_tower_damage'
     ])
     y = df['player_win']
 
