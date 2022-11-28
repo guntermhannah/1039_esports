@@ -50,10 +50,10 @@ def init_model(X, y):
 
     # model architecture
     model = Sequential()
-    model.add(layers.Dense(30, activation = "relu", input_dim = 18))
-    model.add(layers.Dense(25, activation = "relu"))
-    model.add(layers.Dropout(rate=0.2))
-    model.add(layers.Dense(20, activation = "relu"))
+    model.add(layers.Dense(60, activation = "relu", input_dim = 18))
+    model.add(layers.Dense(40, activation = "relu"))
+    model.add(layers.Dense(30, activation = "relu"))
+    model.add(layers.Dense(15, activation = "relu"))
     model.add(layers.Dense(1, activation = "sigmoid"))
 
     # compile model
@@ -63,9 +63,9 @@ def init_model(X, y):
     es = EarlyStopping(patience = 20, restore_best_weights = True)
 
     history = model.fit(X,y, 
-                        batch_size = 32, 
+                        batch_size = 8, 
                         validation_split = 0.3,
-                        epochs = 100, 
+                        epochs = 300, 
                         callbacks = es,
                         verbose = True)
 
