@@ -32,6 +32,9 @@ def predict(account_id, opponent_id):
     except Exception:
         return "The ID's provided are not valid"
 
+    # ~~~~~~ Win rate data~~~~~~~~
+    # make sure to retrieve the win rate data here to pass onto the machine learning model
+
     # ~~~~~~~~~~~ RUN MODEL ~~~~~~~~~~~~~~~
     # replace with actual model
     def model():
