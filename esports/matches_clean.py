@@ -52,7 +52,7 @@ def clean_player_pairs_data():
 
     # load csv and convert to DataFrame
     df = pd.read_csv(
-        os.path.join("esports", "data", "player_pairs_avg_stats.csv"))
+        os.path.join("data", "player_pairs_avg_stats.csv"))
 
     # drop duplicates
     df_clean = df.drop_duplicates()
