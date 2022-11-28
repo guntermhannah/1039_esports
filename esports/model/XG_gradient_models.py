@@ -89,8 +89,3 @@ def grid_search_grad():
     gsearch.fit(X_train, y_train)
 
     return gsearch.best_params_
-
-#print(grid_search_XGB())
-print(XGBoost_model())
-#print(grid_search_grad())
-print(gradient_boost_model(grid_search_grad()))
