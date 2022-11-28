@@ -59,7 +59,7 @@ def get_training_set():
     ]
 
     # group player data by match_id, take the first account of winning and losing teams
-    tmp = df[4000:].groupby(["match_id", "isRadiant"]).first()
+    tmp = df.groupby(["match_id", "isRadiant"]).first()
 
     counter = 0
     # create df of pairs of winners and losers
