@@ -1,7 +1,9 @@
 from sklearn.ensemble import GradientBoostingClassifier
 from xgboost import XGBClassifier
 from sklearn.metrics import accuracy_score
-from matches_clean import train_test_split_data
+from esports.matches_clean import train_test_split_data
+import pandas as pd
+pd.options.mode.chained_assignment = None  # default='warn'
 
 def XGBoost_model(n_estimators=100):
 
@@ -22,3 +24,6 @@ def gradient_boost_model(n_estimators=100):
     accuracy = accuracy_score(y_test, y_pred)
 
     return accuracy
+
+print(XGBoost_model())
+print(gradient_boost_model())
