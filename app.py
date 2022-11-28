@@ -59,14 +59,11 @@ if account_id and opps_account_id != '':
         try:
             user_wr = user_wr['win'] / (user_wr['win'] + user_wr['lose'])
         except Exception as e:
-            user_wr = 0.01
+            user_wr = 0
         try:
             opps_wr = user_wr['win'] / (user_wr['win'] + user_wr['lose'])
         except Exception as e:
-            opps_wr = 0.01
-
-        # st.text(f'the account is is {user_wr}')
-        # st.text(f'the type is is {type(opps_wr)}')
+            opps_wr = 0
 
         # if user wins or loses
         if user_wr > opps_wr:
