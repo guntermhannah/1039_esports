@@ -33,6 +33,3 @@ termcolor
 tensorflow
 bs4
 
-# UI
-streamlit
-
