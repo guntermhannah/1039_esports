@@ -65,7 +65,7 @@ def init_model(X, y):
     history = model.fit(X,y, 
                         batch_size = 32, 
                         validation_split = 0.3,
-                        epochs = 300, 
+                        epochs = 100, 
                         callbacks = es,
                         verbose = True)
 
