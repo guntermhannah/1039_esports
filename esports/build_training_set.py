@@ -9,6 +9,7 @@ from transform_data import average_player_data
 
 def wrapper(x):
     if type(average_player_data(x)) == str:
+<<<<<<< HEAD:1039_esports/build_training_set.py
         empty_df ={'deaths_per_min':0, 
                 'assists_per_min': 0, 
                 'tower_damage_per_min': 0, 
@@ -18,6 +19,17 @@ def wrapper(x):
                 'hero_damage_per_min': 0, 
                 'last_hits_per_min': 0}
         return pd.DataFrame([empty_df.values()], columns = empty_df.keys())
+=======
+        return {'deaths_per_min':None,
+                'assists_per_min': None,
+                'tower_damage_per_min': None,
+                'xp_per_min': None,
+                'gold_per_min': None,
+                'kills_per_min': None,
+                'hero_damage_per_min': None,
+                'last_hits_per_min': None
+        }
+>>>>>>> master:esports/build_training_set.py
     else:
         return average_player_data(x)
 
@@ -48,20 +60,24 @@ def get_training_set():
     df = player_data.merge(matches_data)
 
     # relevant features
-    features = ['deaths_per_min', 
-                'assists_per_min', 
-                'tower_damage_per_min', 
-                'xp_per_min', 
-                'gold_per_min', 
+    features = ['deaths_per_min',
+                'assists_per_min',
+                'tower_damage_per_min',
+                'xp_per_min',
+                'gold_per_min',
                 'kills_per_min',
-                'hero_damage_per_min', 
-                'last_hits_per_min', 
+                'hero_damage_per_min',
+                'last_hits_per_min',
     ]
 
     # group player data by match_id, take the first account of winning and losing teams
     tmp = df.groupby(["match_id", "isRadiant"]).first()
 
+<<<<<<< HEAD:1039_esports/build_training_set.py
     counter = 0
+=======
+
+>>>>>>> master:esports/build_training_set.py
     # create df of pairs of winners and losers
     for match, new_df in tmp.groupby(level=[0]):
         game = {"match_id": 0,
@@ -93,7 +109,7 @@ def get_training_set():
         game["match_id"] = match
         if len(new_df) !=2:
             continue
-            
+
         # get player account_id
         player_account_id = str(int(new_df.loc[(match, False),"account_id"]))
         if len(player_account_id)<9:
@@ -112,13 +128,18 @@ def get_training_set():
         else:
             game["winner"] = opponent_account_id
 
+<<<<<<< HEAD:1039_esports/build_training_set.py
 
         game_df = pd.DataFrame([game.values()], columns = game.keys())
+=======
+        game_df = pd.DataFrame([game.values()], columns = game.keys())
+
+>>>>>>> master:esports/build_training_set.py
         
         # drop data without per min stats
         game_df = game_df.drop(columns = ["player_net_worth",
-                                    "player_hero_damage", 
-                                    "player_last_hits", 
+                                    "player_hero_damage",
+                                    "player_last_hits",
                                     "opponent_net_worth",
                                     "opponent_hero_damage",
                                     "opponent_last_hits",
@@ -133,6 +154,7 @@ def get_training_set():
             continue
 
 
+<<<<<<< HEAD:1039_esports/build_training_set.py
         # get player and opponent wl data
         player_wl_data = get_wl_data(player_account_id)
         if player_wl_data["win"] + player_wl_data["lose"] == 0:
@@ -155,4 +177,6 @@ def get_training_set():
         time.sleep(4)
 
 
+=======
+>>>>>>> master:esports/build_training_set.py
 get_training_set()
