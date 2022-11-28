@@ -54,7 +54,7 @@ def build_wl_dataset():
 
         time.sleep(1)
 
-build_wl_dataset()
+#build_wl_dataset()
 
 
 def get_match_pairs():
@@ -97,3 +97,5 @@ def get_match_pairs():
 
     pd.DataFrame(games).to_csv(os.path.join("esports", "data", "player_pairs.csv"), mode = "a", index = False, header=True)
 
+
+#get_match_pairs()
