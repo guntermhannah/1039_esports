@@ -38,7 +38,7 @@ def build_wl_dataset():
         win_loss = {"account_id":account_id,"wins":data["win"],"losses":data["lose"], "total" :data["win"]+data["lose"]}
 
         df = pd.DataFrame([win_loss.values()], columns = win_loss.keys())
-        
+
         df.to_csv(os.path.join("data", "wl_data.csv"), mode = "a", index = False, header=False)
 
         #get opponent wl data
@@ -49,12 +49,12 @@ def build_wl_dataset():
         win_loss = {"account_id":account_id,"wins":data["win"],"losses":data["lose"], "total" :data["win"]+data["lose"]}
 
         df = pd.DataFrame([win_loss.values()], columns = win_loss.keys())
-        
+
         df.to_csv(os.path.join("data", "wl_data.csv"), mode = "a", index = False, header=False)
 
         time.sleep(1)
 
-build_wl_dataset()
+#build_wl_dataset()
 
 
 def get_match_pairs():
@@ -97,8 +97,5 @@ def get_match_pairs():
 
     pd.DataFrame(games).to_csv(os.path.join("esports", "data", "player_pairs.csv"), mode = "a", index = False, header=True)
 
-<<<<<<< HEAD:1039_esports/get_wl_data.py
-=======
 
-get_match_pairs()
->>>>>>> master:esports/get_wl_data.py
+#get_match_pairs()
