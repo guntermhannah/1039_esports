@@ -7,10 +7,6 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
-<<<<<<< HEAD
-from sklearn.model_selection import GridSearchCV
-=======
->>>>>>> 01504eb58d50d7b4216f578108195b5d03d7ae4c
 from sklearn.svm import SVC
 from xgboost import XGBClassifier
 
@@ -58,12 +54,13 @@ def rf_model():
                                    max_depth=None,
                                    min_samples_split=2,
                                    min_samples_leaf=1,
-                                   max_features=None,
+                                   max_features='sqrt',
                                    max_leaf_nodes=None,
                                    min_impurity_decrease=0.0,
                                    n_jobs=None,
                                    random_state=None,
                                    max_samples=None)
+
     model.fit(X_train_scaled, y_train)
     y_pred = model.predict(X_test_scaled)
     accuracy = accuracy_score(y_test, y_pred)
@@ -191,7 +188,7 @@ def ml_stacking():
         ("knn", KNeighborsClassifier(n_neighbors=10))
     ],
                                   final_estimator=LogisticRegression())
-    
+
     ensemble.fit(X_train_scaled, y_train)
     y_pred = ensemble.predict(X_test_scaled)
     accuracy = accuracy_score(y_test, y_pred)
@@ -201,35 +198,16 @@ def ml_stacking():
 
     return training_accuracy, accuracy
 
-def best_stacking():
-    """returns the best multi-layer stacking model of random forest, knn, log reg, and svc
-    with log reg as final estimator"""
-    best_rf_model = RandomForestClassifier(max_depth =200, max_features = "log2", min_samples_leaf=2, min_samples_split = 9)
-    best_knn_model = KNeighborsClassifier(n_neighbors = 2, algorithm = "auto", weights = "uniform")
-    best_log_reg_model = LogisticRegression(penalty = "l2", solver = "saga", C = 6)
-    best_svc_model = SVC(gamma="auto", C = 10)
 
-    stacking_model = StackingClassifier(estimators=[
-        ("rf", best_rf_model),
-        ("knn", best_knn_model),
-        ("log_reg", best_log_reg_model), 
-        ("svc", best_svc_model)],
-        final_estimator=LogisticRegression(solver = "saga", C = 10, penalty = "l2")
-    )
-
-    stacking_model.fit(X_train_scaled, y_train)
-    return stacking_model
-
-
-# print("cross validiation scores, accuracy scores:")
-# print("logistic regression: ", log_model())
-# print("decision tree:", dt_model())
-# print("random forest: ", rf_model())
-# print("bagged tree: ", bagged_tree())
-# print("bagged knn:", bagged_knn())
-# print("gradient boosting:", gb_model())
-# print("xtreme gradient boosting:", xgb_model())
-# print("support vector machine:", svm_model())
-# print("simple aggregation:", simple_stacking())
-# print("simple aggregation (3 classifiers):", simple_stacking_2())
-# print("multi-layer stacking:", ml_stacking())
+print("accuracy scores: training, testing:")
+print("logistic regression: ", log_model())
+print("decision tree:", dt_model())
+print("random forest: ", rf_model())
+print("bagged tree: ", bagged_tree())
+print("bagged knn:", bagged_knn())
+print("gradient boosting:", gb_model())
+print("xtreme gradient boosting:", xgb_model())
+print("support vector machine:", svm_model())
+print("simple aggregation:", simple_stacking())
+print("simple aggregation (3 classifiers):", simple_stacking_2())
+print("multi-layer stacking:", ml_stacking())
