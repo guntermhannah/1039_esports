@@ -98,12 +98,6 @@ def predict(account_id, opponent_id):
         xgb = XGBClassifier()
 
         xgb.fit(X_train_scaled, y_train)
-        X_pred = X_pred.drop(columns=[
-            'match_id', 'player', 'opponent', 'winner',
-            'player_roshans_killed', 'player_obs_placed',
-            'opponent_roshans_killed', 'opponent_obs_placed', 'player_win',
-            'dummy'
-        ])
         X_pred = rb_scaler.transform(player)
         y_pred = xgb.predict_proba(player)
 
