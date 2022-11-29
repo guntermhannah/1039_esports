@@ -141,4 +141,6 @@ player_avg = player_avg.append(player_win_ratio)
 opponent_avg = opponent_avg.append(opponent_win_ratio)
 
 player_avg.append(opponent_avg)
-print(pd.DataFrame(player_avg.append(opponent_avg)))
+
+df = pd.DataFrame(player_avg.append(opponent_avg))
+print(df.T)
