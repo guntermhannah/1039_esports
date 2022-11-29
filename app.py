@@ -3,6 +3,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import time
+import base64
 import plotly.express as px
 
 
@@ -19,8 +20,28 @@ st.set_page_config(
     initial_sidebar_state="auto"
 )
 
-# set image image
-st.image('esports/data/home_page_img.jpeg')
+# set background image
+@st.cache
+def load_image(path):
+    with open(path, 'rb') as f:
+        data = f.read()
+    encoded = base64.b64encode(data).decode()
+    return encoded
+
+def background_image_style(path):
+    encoded = load_image(path)
+    style = f'''
+    <style>
+    .stApp {{
+        background-image: url("data:image/png;base64,{encoded}");
+        background-size: cover;
+    }}
+    </style>
+    '''
+    return style
+
+image_path = "esports/data/radiant-dire.jpg"
+st.write(background_image_style(image_path), unsafe_allow_html=True)
 
 
 # # Sidebar
