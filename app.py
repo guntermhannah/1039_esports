@@ -3,6 +3,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 
+
 # local imports
 from scrape.steam_id_finder import steam_id_finder
 from esports.get_wl_data import get_wl_data
@@ -15,65 +16,87 @@ st.set_page_config(
     layout="centered",
     initial_sidebar_state="auto"
 )
+
 st.image('esports/data/home_page_img.jpeg')
 
 
-# Sidebar
-st.sidebar.markdown("# Navigation")
-    # Create multiple pages (from files)
-    # copy the corresponding information into each page
+# # Sidebar
+# st.sidebar.markdown("# Navigation")
+#     # Create multiple pages (from files)
+#     # copy the corresponding information into each page
 
 # Page title and description
 st.markdown("""# Dota2 Win Predictor 🕹️""")
-st.text(""" We predict the outcome of the match between you and an opponent """)
+st.text(""" ~~Predicting the outcome of a match between two players~~ """)
 
 # Explanation of page
 st.markdown("""## ❓ How does it work ❓ """)
-st.text(""" Using the OpenDota Api, we retrieve your last matches as well as the
-opponents last matches and predict who will win.""")
+st.text(""" Using the OpenDota Api, we retrieve the stats of any two players.
+Then, through the magic of machine learning, we predict the winner!""")
 
 st.markdown("""## ❗ Get started ❗ """)
 
 # User chooses their role (player/better)
 role = st.selectbox("Are you a player or a better?", ["Player 🕹️", "Better 💸"])
-if role == ""
+if role == "Player 🕹️":
+    roles = {"player": "you", "player_poss": "your", "opp": "your opponent", "opp_pos":"your opponent's"}
+else:
+    roles = {"player":"Player 1", "player_poss":"Player 1's", "opp": "Player 2", "opp_pos":"Player 2's"}
 
 
-# Prompt user to enter an account_id
-account_id = st.text_input("Enter your Account ID: ")
+# Prompt user to enter account ids for player and opponent
+columns = st.columns(2)
+
+account_id = columns[0].text_input(f"Enter {roles['player_poss']} Account ID: ")
+opps_account_id = columns[1].text_input(f"Enter {roles['opp_pos']} Account ID: ")
 user_id = steam_id_finder(account_id)
-if not user_id:
-    st.error("The account ID is not a valid account ID, please try again")
-opps_account_id = st.text_input("Enter your Opponent's Account ID: ")
 opps_id = steam_id_finder(opps_account_id)
-if not opps_id:
-    st.error("The account ID is not a valid account ID, please try again")
+if not user_id or (not opps_id):
+    st.error("Hmmm... Something went wrong. Try a different account ID.")
+
+#------- API structure to get prediction from model --------
+
+# button to retrieve results
+button = False
+if st.button("Find the winner"):
+    st.write("Calculating the odds...")
+    button = True
 
 
-if user_id and opps_id:
-    # if the id inputted are correct, we get their win rates
-    user_wr = get_wl_data(user_id)
-    opps_wr = get_wl_data(opps_id)
-    # since the method outputs 0,0 for faulty ids, we just give them an arbitrary number
-    try:
-        user_wr = user_wr['win'] / (user_wr['win'] + user_wr['lose'])
-    except Exception as e:
-        user_wr = 0
-        st.error("Looks like this player hasn't played any games... try entering a different account ID")
-    try:
-        opps_wr = opps_wr['win'] / (opps_wr['win'] + opps_wr['lose'])
-    except Exception as e:
-        opps_wr = 0
-        st.error("Looks like this player hasn't played any games... try entering a different account ID")
+# if user_id and opps_id:
+#     # if the id inputted are correct, we get their win rates
+#     user_wr = get_wl_data(user_id)
+#     opps_wr = get_wl_data(opps_id)
+#     # since the method outputs 0,0 for faulty ids, we just give them an arbitrary number
+#     try:
+#         user_wr = user_wr['win'] / (user_wr['win'] + user_wr['lose'])
+#     except Exception as e:
+#         user_wr = 0.001
+#         st.error("Looks like this player hasn't played any games... try entering a different account ID")
+#     try:
+#         opps_wr = opps_wr['win'] / (opps_wr['win'] + opps_wr['lose'])
+#     except Exception as e:
+#         opps_wr = 0.001
+#         st.error("Looks like this player hasn't played any games... try entering a different account ID")
 
 
-    # if user wins or loses
-    if user_wr > opps_wr:
-        st.write("You have a higher probability of winning")
-    elif user_wr == opps_wr:
-        st.write("You both have the same probability of winning")
+winner = "opp"
+win_proba = 0.75
+
+# -------------- interpreting results ----------------
+
+# if user wins or loses
+if button:
+    if role == "Player 🕹️":
+        if winner == "player":
+            st.write(f"{roles[winner].capitalize()} have a higher probability of winning!!")
+        else:
+            st.write(f"Uh oh... {roles['opp']} has a higher chance of winning.")
+
+
     else:
-        st.write("The opponent has a higher probability of winning")
+        st.write(f"{roles[winner].capitalize()} has a {win_proba} probability of winning.")
+
 
 
 # ~~~~~~~~~~~~ misc ~~~~~~~~~~~~~~~~
