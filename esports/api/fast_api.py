@@ -79,8 +79,7 @@ def predict(account_id, opponent_id):
     #    return 0.5
     #prediction = model()
 
-    def xgb_model():
-        global X_pred
+    def xgb_model(X_pred):
         df = clean_player_pairs_data()
         X = df.drop(columns=[
             'match_id', 'player', 'opponent', 'winner',
@@ -107,7 +106,7 @@ def predict(account_id, opponent_id):
 
         return y_pred
 
-    prediction = xgb_model()
+    prediction = xgb_model(X_pred)
 
     return dict(winner=int(prediction))
 
