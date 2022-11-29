@@ -1,14 +1,15 @@
 # package imports
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from xgboost import XGBClassifier
+from sklearn.preprocessing import RobustScaler
+import pandas as pd
 
 # local imports
-from scrape.steam_id_finder import steam_id_finder
-from transform_data import average_player_data
-from get_wl_data import get_wl_data
-from matches_clean import clean_player_pairs_data
-from xgboost import XGBClassifier
-from XGBoost import XGB
+from esports.scrape.steam_id_finder import steam_id_finder
+from esports.transform_data import average_player_data
+from esports.get_wl_data import get_wl_data
+from esports.matches_clean import clean_player_pairs_data, train_test_split_data
 
 app = FastAPI()
 
@@ -22,8 +23,9 @@ app.add_middleware(
 
 # ~~~~~~~~~ MODEL ~~~~~~~~~~
 # make sure to replace the model with the actual machine learning model
-model = XGB()
+model = XGBClassifier()
 app.state.model = model
+
 
 # ~~~~~~~~~ Predict endpoint, where we will call the api ~~~~~~~~~~
 @app.get('/predict')
@@ -43,25 +45,67 @@ def predict(account_id, opponent_id):
     player_wl = get_wl_data(user_steam_id)
     opponent_wl = get_wl_data(opps_steam_id)
 
+    keys_to_transform = [
+        'kills_per_min', 'deaths_per_min', 'assists_per_min', 'xp_per_min',
+        'gold_per_min', 'hero_damage_per_min', 'tower_damage_per_min',
+        'last_hits_per_min'
+    ]
+
+    # for key in keys_to_transform:
+    #     player_avg = player_avg.rename(index={key: f'player_{key}'})
+    #     opponent_avg = opponent_avg.rename(index={key: f'opponent_{key}'})
+
+    # # Append win_ratio to player_avg and opponent_avg
+    # player_win_ratio = pd.Series(
+    #     [player_wl["win"] / (player_wl["win"] + player_wl["lose"])],
+    #     index=['player_win_ratio'])
+
+    # opponent_win_ratio = pd.Series(
+    #     [opponent_wl["win"] / (opponent_wl["win"] + opponent_wl["lose"])],
+    #     index=['opponent_win_ratio'])
+
+    # player_avg = player_avg.append(player_win_ratio)
+    # opponent_avg = opponent_avg.append(opponent_win_ratio)
+
+    #X_pred = player_avg.append(opponent_avg)
+
     # ~~~~~~~~~~~ RUN MODEL ~~~~~~~~~~~~~~~
     # replace with actual model
     #def model():
     #    return 0.5
     #prediction = model()
 
-    def model(X, y):
+    def model(player, opponent):
 
         df = clean_player_pairs_data()
-        X_train = df.drop(columns=[
-            'match_id', 'player', 'opponent', 'winner', 'player_roshans_killed',
-            'player_obs_placed', 'opponent_roshans_killed', 'opponent_obs_placed',
-            'player_win', 'player_tower_damage', 'opponent_tower_damage'
+        X = df.drop(columns=[
+            'match_id', 'player', 'opponent', 'winner',
+            'player_roshans_killed', 'player_obs_placed',
+            'opponent_roshans_killed', 'opponent_obs_placed', 'player_win',
+            'player_tower_damage', 'opponent_tower_damage'
         ])
-        y_train = df['player_win']
+
+        y = df['player_win']
+
+        # train test split
+        X_train, X_test, y_train, y_test = train_test_split_data()
+
+        # Scale numerical variables
+        rb_scaler = RobustScaler()
+        X_train_scaled = rb_scaler.fit_transform(X_train)
+        X_test_scaled = rb_scaler.transform(X_test)
+
         xgb = XGBClassifier()
 
-        xgb.fit(X_train, y_train)
-        y_pred = xgb.predict_proba(X)
+        xgb.fit(X_train_scaled, y_train)
+        X_pred = X_pred.drop(columns=[
+            'match_id', 'player', 'opponent', 'winner',
+            'player_roshans_killed', 'player_obs_placed',
+            'opponent_roshans_killed', 'opponent_obs_placed', 'player_win',
+            'dummy'
+        ])
+        X_pred = rb_scaler.transform(player)
+        y_pred = xgb.predict_proba(player)
 
         return y_pred
 
@@ -69,5 +113,38 @@ def predict(account_id, opponent_id):
 
     return dict(winner=int(prediction))
 
-    # make a decision based on the model from here and return the prediction to the user
-    #return dict(winner=int(prediction))
+
+#print(predict(148673797, 392047872))
+# make a decision based on the model from here and return the prediction to the user
+#return dict(winner=int(prediction))
+
+player_avg = average_player_data(148673797)
+opponent_avg = average_player_data(392047872)
+player_wl = get_wl_data(148673797)
+opponent_wl = get_wl_data(392047872)
+keys_to_transform = [
+    'kills_per_min', 'deaths_per_min', 'assists_per_min', 'xp_per_min',
+    'gold_per_min', 'hero_damage_per_min', 'tower_damage_per_min',
+    'last_hits_per_min'
+]
+
+for key in keys_to_transform:
+
+    # change name of the column
+    player_avg = player_avg.rename(index={key: f'player_{key}'})
+    opponent_avg = opponent_avg.rename(index={key: f'opponent_{key}'})
+
+# Append win_ratio to player_avg and opponent_avg
+player_win_ratio = pd.Series(
+    [player_wl["win"] / (player_wl["win"] + player_wl["lose"])],
+    index=['player_win_ratio'])
+
+opponent_win_ratio = pd.Series(
+    [opponent_wl["win"] / (opponent_wl["win"] + opponent_wl["lose"])],
+    index=['opponent_win_ratio'])
+
+player_avg = player_avg.append(player_win_ratio)
+opponent_avg = opponent_avg.append(opponent_win_ratio)
+
+player_avg.append(opponent_avg)
+print(pd.DataFrame(player_avg.append(opponent_avg)))
