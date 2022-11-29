@@ -3,6 +3,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import time
+import plotly.express as px
 
 
 # local imports
@@ -29,12 +30,12 @@ st.image('esports/data/home_page_img.jpeg')
 
 # Page title and description
 st.title("""DotaDubs 🕹️""")
-st.markdown(""" Predict who will emerge victorious in a battle to destroy each other's Ancients""")
+st.markdown(""" Predicting who will emerge victorious in the battle to *destroy each other's Ancients*""")
 
-# Explanation of page
-st.markdown("""### ❓ How does it work ❓ """)
-st.markdown(""" Using **player stats** and the **magic of machine learning**,
-we predict the outcome of a game between two players!""")
+# # Explanation of page
+# st.markdown("""### ❓ How does it work ❓ """)
+# st.markdown(""" Using the **magic of machine learning**,
+# we can predict the outcome of a game between two players!""")
 
 st.markdown("""### ❗ Get started ❗ """)
 
@@ -49,8 +50,8 @@ else:
 # Prompt user to enter account ids for player and opponent
 columns = st.columns(2)
 
-account_id = columns[0].text_input(f"Enter {roles['player_poss']} Account ID: ")
-opps_account_id = columns[1].text_input(f"Enter {roles['opp_pos']} Account ID: ")
+account_id = columns[0].text_input(f"Enter {roles['player_poss']} Steam ID: ")
+opps_account_id = columns[1].text_input(f"Enter {roles['opp_pos']} Steam ID: ")
 user_id = steam_id_finder(account_id)
 opps_id = steam_id_finder(opps_account_id)
 if not user_id or (not opps_id):
@@ -63,7 +64,7 @@ results_fetched = False
 if st.button("Who will win?"):
     results_fetched = True
     with st.spinner("Calculating the odds..."):
-        time.sleep(5)
+        time.sleep(3)
 
 # if user_id and opps_id:
 #     # if the id inputted are correct, we get their win rates
@@ -84,8 +85,9 @@ if st.button("Who will win?"):
 
 winner = "opp"
 win_proba = 0.75
-player_stats = pd.DataFrame([["player1_stat", "another_player1_stat"]], index = [roles['player'].capitalize()])
-opp_stats = pd.DataFrame([["player2_stat", "another_player2_stat"]], index = [roles["opp"].capitalize()])
+player_stats = pd.DataFrame([[45, 36]], columns = ["stat_1", "stat_2"], index = [roles['player'].capitalize()])
+opp_stats = pd.DataFrame([[27, 13]], columns = ["stat_1", "stat_2"], index = [roles["opp"].capitalize()])
+both_stats = pd.concat([player_stats, opp_stats])
 
 
 # -------------- interpreting results ----------------
@@ -97,16 +99,17 @@ if results_fetched:
         if winner == "player":
             st.write(f"Congratulations! {roles[winner].capitalize()} have a higher probability of winning!!")
         else:
-            st.write(f"Bad news... {roles['opp']} has a higher chance of winning.")
+            st.write(f"Bad news... {roles['opp']} has a higher chance of winning 😓")
 
         # give them the option of viewing the stats
         with st.expander("Show me my stats", expanded = False) :
-            st.write(player_stats)
+            st.table(player_stats)
 
     else:
-        st.markdown(f"**{roles[winner].capitalize()}** has a {win_proba} probability of winning.")
+        st.markdown(f"**{roles[winner].capitalize()}** has a **{win_proba}** probability of winning.")
         st.markdown("### Compare Player Statistics")
-        st.write(pd.concat([player_stats, opp_stats]))
+        st.table(both_stats)
+
 
 
 
