@@ -2,6 +2,7 @@ import random
 import streamlit as st
 import numpy as np
 import pandas as pd
+import time
 
 
 # local imports
@@ -17,6 +18,7 @@ st.set_page_config(
     initial_sidebar_state="auto"
 )
 
+# set image image
 st.image('esports/data/home_page_img.jpeg')
 
 
@@ -26,15 +28,15 @@ st.image('esports/data/home_page_img.jpeg')
 #     # copy the corresponding information into each page
 
 # Page title and description
-st.markdown("""# Dota2 Win Predictor 🕹️""")
-st.text(""" ~~Predicting the outcome of a match between two players~~ """)
+st.title("""DotaDubs 🕹️""")
+st.markdown(""" Predict who will emerge victorious in a battle to destroy each other's Ancients""")
 
 # Explanation of page
-st.markdown("""## ❓ How does it work ❓ """)
-st.text(""" Using the OpenDota Api, we retrieve the stats of any two players.
-Then, through the magic of machine learning, we predict the winner!""")
+st.markdown("""### ❓ How does it work ❓ """)
+st.markdown(""" Using **player stats** and the **magic of machine learning**,
+we predict the outcome of a game between two players!""")
 
-st.markdown("""## ❗ Get started ❗ """)
+st.markdown("""### ❗ Get started ❗ """)
 
 # User chooses their role (player/better)
 role = st.selectbox("Are you a player or a better?", ["Player 🕹️", "Better 💸"])
@@ -57,11 +59,11 @@ if not user_id or (not opps_id):
 #------- API structure to get prediction from model --------
 
 # button to retrieve results
-button = False
-if st.button("Find the winner"):
-    st.write("Calculating the odds...")
-    button = True
-
+results_fetched = False
+if st.button("Who will win?"):
+    results_fetched = True
+    with st.spinner("Calculating the odds..."):
+        time.sleep(5)
 
 # if user_id and opps_id:
 #     # if the id inputted are correct, we get their win rates
@@ -82,20 +84,31 @@ if st.button("Find the winner"):
 
 winner = "opp"
 win_proba = 0.75
+player_stats = pd.DataFrame([["player1_stat", "another_player1_stat"]], index = [roles['player'].capitalize()])
+opp_stats = pd.DataFrame([["player2_stat", "another_player2_stat"]], index = [roles["opp"].capitalize()])
+
 
 # -------------- interpreting results ----------------
 
 # if user wins or loses
-if button:
+if results_fetched:
     if role == "Player 🕹️":
+        # tell the player who will win
         if winner == "player":
-            st.write(f"{roles[winner].capitalize()} have a higher probability of winning!!")
+            st.write(f"Congratulations! {roles[winner].capitalize()} have a higher probability of winning!!")
         else:
-            st.write(f"Uh oh... {roles['opp']} has a higher chance of winning.")
+            st.write(f"Bad news... {roles['opp']} has a higher chance of winning.")
 
+        # give them the option of viewing the stats
+        with st.expander("Show me my stats", expanded = False) :
+            st.write(player_stats)
 
     else:
-        st.write(f"{roles[winner].capitalize()} has a {win_proba} probability of winning.")
+        st.markdown(f"**{roles[winner].capitalize()}** has a {win_proba} probability of winning.")
+        st.markdown("### Compare Player Statistics")
+        st.write(pd.concat([player_stats, opp_stats]))
+
+
 
 
 
