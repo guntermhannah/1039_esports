@@ -33,8 +33,10 @@ def predict(account_id, opponent_id):
     "This endpoint allows to retrieve the prediction"
     #  ~~~~~~~~~ scrape STEAM32 ID ~~~~~~~~~~~~
     try:
-        user_steam_id = steam_id_finder(account_id)
-        opps_steam_id = steam_id_finder(opponent_id)
+        user_steam_id = account_id
+        opps_steam_id = opponent_id
+        #user_steam_id = steam_id_finder(account_id)
+        #opps_steam_id = steam_id_finder(opponent_id)
     except Exception:
         return "The ID's provided are not valid"
 
@@ -51,23 +53,25 @@ def predict(account_id, opponent_id):
         'last_hits_per_min'
     ]
 
-    # for key in keys_to_transform:
-    #     player_avg = player_avg.rename(index={key: f'player_{key}'})
-    #     opponent_avg = opponent_avg.rename(index={key: f'opponent_{key}'})
+    for key in keys_to_transform:
+        player_avg = player_avg.rename(index={key: f'player_{key}'})
+        opponent_avg = opponent_avg.rename(index={key: f'opponent_{key}'})
 
-    # # Append win_ratio to player_avg and opponent_avg
-    # player_win_ratio = pd.Series(
-    #     [player_wl["win"] / (player_wl["win"] + player_wl["lose"])],
-    #     index=['player_win_ratio'])
+    # Append win_ratio to player_avg and opponent_avg
+    player_win_ratio = pd.Series(
+        [player_wl["win"] / (player_wl["win"] + player_wl["lose"])],
+        index=['player_win_ratio'])
 
-    # opponent_win_ratio = pd.Series(
-    #     [opponent_wl["win"] / (opponent_wl["win"] + opponent_wl["lose"])],
-    #     index=['opponent_win_ratio'])
+    opponent_win_ratio = pd.Series(
+        [opponent_wl["win"] / (opponent_wl["win"] + opponent_wl["lose"])],
+        index=['opponent_win_ratio'])
 
-    # player_avg = player_avg.append(player_win_ratio)
-    # opponent_avg = opponent_avg.append(opponent_win_ratio)
+    X_pred = player_avg.append(opponent_avg)
+    X_pred = X_pred.append(player_win_ratio)
+    X_pred = X_pred.append(opponent_win_ratio)
 
-    #X_pred = player_avg.append(opponent_avg)
+    X_pred = pd.DataFrame(X_pred)
+    X_pred = X_pred.T
 
     # ~~~~~~~~~~~ RUN MODEL ~~~~~~~~~~~~~~~
     # replace with actual model
@@ -75,8 +79,8 @@ def predict(account_id, opponent_id):
     #    return 0.5
     #prediction = model()
 
-    def model(player, opponent):
-
+    def xgb_model():
+        global X_pred
         df = clean_player_pairs_data()
         X = df.drop(columns=[
             'match_id', 'player', 'opponent', 'winner',
@@ -98,47 +102,17 @@ def predict(account_id, opponent_id):
         xgb = XGBClassifier()
 
         xgb.fit(X_train_scaled, y_train)
-        X_pred = rb_scaler.transform(player)
-        y_pred = xgb.predict_proba(player)
+        X_pred = rb_scaler.transform(X_pred)
+        y_pred = xgb.predict_proba(X_pred)
 
         return y_pred
 
-    prediction = model(player_avg, opponent_avg)
+    prediction = xgb_model()
 
     return dict(winner=int(prediction))
 
 
+print(predict(148673797, 392047872))
 #print(predict(148673797, 392047872))
 # make a decision based on the model from here and return the prediction to the user
 #return dict(winner=int(prediction))
-
-player_avg = average_player_data(148673797)
-opponent_avg = average_player_data(392047872)
-player_wl = get_wl_data(148673797)
-opponent_wl = get_wl_data(392047872)
-keys_to_transform = [
-    'kills_per_min', 'deaths_per_min', 'assists_per_min', 'xp_per_min',
-    'gold_per_min', 'hero_damage_per_min', 'tower_damage_per_min',
-    'last_hits_per_min'
-]
-
-for key in keys_to_transform:
-
-    # change name of the column
-    player_avg = player_avg.rename(index={key: f'player_{key}'})
-    opponent_avg = opponent_avg.rename(index={key: f'opponent_{key}'})
-
-# Append win_ratio to player_avg and opponent_avg
-player_win_ratio = pd.Series(
-    [player_wl["win"] / (player_wl["win"] + player_wl["lose"])],
-    index=['player_win_ratio'])
-
-opponent_win_ratio = pd.Series(
-    [opponent_wl["win"] / (opponent_wl["win"] + opponent_wl["lose"])],
-    index=['opponent_win_ratio'])
-
-player_avg = player_avg.append(player_win_ratio)
-opponent_avg = opponent_avg.append(opponent_win_ratio)
-
-player_avg.append(opponent_avg)
-print(pd.DataFrame(player_avg.append(opponent_avg)))
