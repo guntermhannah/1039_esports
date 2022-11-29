@@ -108,7 +108,7 @@ def predict(account_id, opponent_id):
 
     prediction = xgb_model(X_pred)
 
-    return dict(winner=int(prediction))
+    return prediction
 
 
 print(predict(148673797, 392047872))
