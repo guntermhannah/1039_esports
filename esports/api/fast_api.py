@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 # local imports
+'''
 from scrape.steam_id_finder import steam_id_finder
 from transform_data import average_player_data
 from get_wl_data import get_wl_data
@@ -10,6 +11,7 @@ from matches_clean import clean_player_pairs_data
 from xgboost import XGBClassifier
 from XGBoost import XGB
 
+'''
 app = FastAPI()
 
 app.add_middleware(
@@ -19,7 +21,7 @@ app.add_middleware(
     allow_methods=['*'],
     allow_headers=['*'],
 )
-
+'''
 # ~~~~~~~~~ MODEL ~~~~~~~~~~
 # make sure to replace the model with the actual machine learning model
 model = XGB()
@@ -71,3 +73,11 @@ def predict(account_id, opponent_id):
 
     # make a decision based on the model from here and return the prediction to the user
     #return dict(winner=int(prediction))
+
+'''
+
+@app.get("/")
+def root():
+    # $CHA_BEGIN
+    return dict(greeting="Hello")
+    # $CHA_END
