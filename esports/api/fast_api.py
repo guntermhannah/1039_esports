@@ -47,7 +47,7 @@ def predict(account_id, opponent_id):
 
     # ~~~~~~~~~~~ RUN MODEL ~~~~~~~~~~~~~~~
 
-    prediction = pipeline.predict(X_pred)
+    prediction = pipeline.predict_proba(X_pred)
 
     output = {
         'player_pred': float(prediction[0][1]),
