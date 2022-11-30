@@ -1,9 +1,10 @@
-from get_data import Dota2Api
+from esports.get_data import Dota2Api
 import pandas as pd
 import os
 import time
 
 api = Dota2Api()
+
 
 def transform_data():
     "This method retrieves data from matches and statistics and outputs it to a csv file"
@@ -12,7 +13,9 @@ def transform_data():
     matches_data = api.fetch_matches()
 
     matches_data.to_csv(os.path.join("esports", "data", "matches.csv"),
-                        mode = "a", index = False, header=False)
+                        mode="a",
+                        index=False,
+                        header=False)
 
     # loop through the matches data to get specific match infromation
     for i in range(len(matches_data)):
@@ -25,9 +28,11 @@ def transform_data():
             continue
 
         # append player data to players
-        player_stats_data.to_csv(os.path.join("esports", "data", "players.csv"),
-                                                            mode = "a", index = False,
-                                                            header=False)
+        player_stats_data.to_csv(os.path.join("esports", "data",
+                                              "players.csv"),
+                                 mode="a",
+                                 index=False,
+                                 header=False)
 
         time.sleep(0.5)
 
@@ -42,8 +47,9 @@ def transform_player_data(account_id):
 
     # append player data to players
     player_df.to_csv(os.path.join("esports", "data", "single_player_data.csv"),
-                                                        mode = "a", index = False,
-                                                        header=False)
+                     mode="a",
+                     index=False,
+                     header=False)
 
 
 def average_player_data(account_id):
@@ -55,8 +61,10 @@ def average_player_data(account_id):
         return ""
 
     # we remove the columns we dont need
-    player_df = player_df.drop(columns = ['game_mode', 'radiant_win', 'duration',
-                                    'match_id', 'lobby_type', 'hero_id', 'average_rank'])
+    player_df = player_df.drop(columns=[
+        'game_mode', 'radiant_win', 'duration', 'match_id', 'lobby_type',
+        'hero_id', 'average_rank'
+    ])
 
     # we aggregate the results to retrieve the mean of each column
     player_df_mean = player_df.agg('mean')

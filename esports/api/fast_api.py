@@ -1,14 +1,20 @@
 # package imports
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from xgboost import XGBClassifier
+from sklearn.preprocessing import RobustScaler
+import pandas as pd
+
+# ignore warnings
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+pd.options.mode.chained_assignment = None
 
 # local imports
-from scrape.steam_id_finder import steam_id_finder
-from transform_data import average_player_data
-from get_wl_data import get_wl_data
-from matches_clean import clean_player_pairs_data
-from xgboost import XGBClassifier
-from XGBoost import XGB
+from esports.scrape.steam_id_finder import steam_id_finder
+from esports.matches_clean import clean_player_pairs_data, train_test_split_data
+from esports.preprocess import preprocess_pairs
+from esports.model.XGB_model import xgb_model
 
 app = FastAPI()
 
@@ -22,8 +28,9 @@ app.add_middleware(
 
 # ~~~~~~~~~ MODEL ~~~~~~~~~~
 # make sure to replace the model with the actual machine learning model
-model = XGB()
-app.state.model = model
+#model = xgb_model(X_pred)
+#app.state.model = model
+
 
 # ~~~~~~~~~ Predict endpoint, where we will call the api ~~~~~~~~~~
 @app.get('/predict')
@@ -31,17 +38,17 @@ def predict(account_id, opponent_id):
     "This endpoint allows to retrieve the prediction"
     #  ~~~~~~~~~ scrape STEAM32 ID ~~~~~~~~~~~~
     try:
-        user_steam_id = steam_id_finder(account_id)
-        opps_steam_id = steam_id_finder(opponent_id)
+        user_steam_id = account_id
+        opps_steam_id = opponent_id
+        #user_steam_id = steam_id_finder(account_id)
+        #opps_steam_id = steam_id_finder(opponent_id)
     except Exception:
-        return "The ID's provided are not valid"
+        return dict("The ID's provided are not valid")
 
     # ~~~~~~ Win rate data~~~~~~~~
     # make sure to retrieve the win rate data here to pass onto the machine learning model
-    player_avg = average_player_data(user_steam_id)
-    opponent_avg = average_player_data(opps_steam_id)
-    player_wl = get_wl_data(user_steam_id)
-    opponent_wl = get_wl_data(opps_steam_id)
+
+    X_pred = preprocess_pairs(user_steam_id, opps_steam_id)
 
     # ~~~~~~~~~~~ RUN MODEL ~~~~~~~~~~~~~~~
     # replace with actual model
@@ -49,25 +56,22 @@ def predict(account_id, opponent_id):
     #    return 0.5
     #prediction = model()
 
-    def model(X, y):
+    prediction = xgb_model(X_pred)
 
-        df = clean_player_pairs_data()
-        X_train = df.drop(columns=[
-            'match_id', 'player', 'opponent', 'winner', 'player_roshans_killed',
-            'player_obs_placed', 'opponent_roshans_killed', 'opponent_obs_placed',
-            'player_win', 'player_tower_damage', 'opponent_tower_damage'
-        ])
-        y_train = df['player_win']
-        xgb = XGBClassifier()
+    output = {'player_pred':float(prediction[0][1]),
+              'opponent_pred':float(prediction[0][0]),
+              'stats':X_pred.to_dict(orient='records')}
 
-        xgb.fit(X_train, y_train)
-        y_pred = xgb.predict_proba(X)
 
-        return y_pred
+    return dict(output)
 
-    prediction = model(player_avg, opponent_avg)
+# ~~~ Test the API on localhost ~~~
+# http://localhost:8000/predict?account_id=148673797&opponent_id=392047872
 
-    return dict(winner=int(prediction))
 
-    # make a decision based on the model from here and return the prediction to the user
-    #return dict(winner=int(prediction))
+
+# ~~~ Testing notes ~~~
+#print(predict(148673797, 392047872))
+#print(predict(148673797, 392047872))
+# make a decision based on the model from here and return the prediction to the user
+#return dict(winner=int(prediction))
