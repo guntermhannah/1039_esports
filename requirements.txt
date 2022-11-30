@@ -3,6 +3,7 @@ pip>=9
 setuptools>=26
 twine
 wheel>=0.29
+pickle
 
 # data science
 numpy
@@ -23,6 +24,7 @@ mlflow
 s3fs
 requests
 fastapi
+uvicorn
 
 # utilities
 six>=1.14
@@ -31,5 +33,4 @@ memoized-property
 termcolor
 
 # deep learning
-tensorflow
 bs4
