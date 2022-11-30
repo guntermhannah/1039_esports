@@ -33,5 +33,4 @@ memoized-property
 termcolor
 
 # deep learning
-tensorflow
 bs4
