@@ -28,8 +28,8 @@ app.add_middleware(
 
 # ~~~~~~~~~ MODEL ~~~~~~~~~~
 # make sure to replace the model with the actual machine learning model
-model = XGBClassifier()
-app.state.model = model
+#model = xgb_model(X_pred)
+#app.state.model = model
 
 
 # ~~~~~~~~~ Predict endpoint, where we will call the api ~~~~~~~~~~
@@ -43,7 +43,7 @@ def predict(account_id, opponent_id):
         #user_steam_id = steam_id_finder(account_id)
         #opps_steam_id = steam_id_finder(opponent_id)
     except Exception:
-        return "The ID's provided are not valid"
+        return dict("The ID's provided are not valid")
 
     # ~~~~~~ Win rate data~~~~~~~~
     # make sure to retrieve the win rate data here to pass onto the machine learning model
@@ -57,16 +57,20 @@ def predict(account_id, opponent_id):
     #prediction = model()
 
     prediction = xgb_model(X_pred)
-    #print(type(X_pred))
 
-    output = {'player_pred':prediction[0][1],
-              'opponent_pred':prediction[0][0],
+    output = {'player_pred':float(prediction[0][1]),
+              'opponent_pred':float(prediction[0][0]),
               'stats':X_pred.to_dict(orient='records')}
 
-    return output
+
+    return dict(output)
+
+# ~~~ Test the API on localhost ~~~
+# http://localhost:8000/predict?account_id=148673797&opponent_id=392047872
 
 
-print(predict(148673797, 392047872))
+
+#print(predict(148673797, 392047872))
 #print(predict(148673797, 392047872))
 # make a decision based on the model from here and return the prediction to the user
 #return dict(winner=int(prediction))
