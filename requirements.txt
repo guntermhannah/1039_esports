@@ -3,12 +3,12 @@ pip>=9
 setuptools>=26
 twine
 wheel>=0.29
-pickle
 
 # data science
 numpy
 pandas
 sklearn
+xgboost
 
 # tests/linter
 black
@@ -20,7 +20,6 @@ yapf
 # API
 gcsfs
 google-cloud-storage
-mlflow
 s3fs
 requests
 fastapi

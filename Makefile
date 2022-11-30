@@ -57,4 +57,4 @@ pypi:
 # API
 
 run_api:
-	uvicorn esports.api.fast_api:app --reload
+	uvicorn esports.api.fast_api:app --reload --host 0.0.0.0
