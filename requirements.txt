@@ -20,7 +20,6 @@ yapf
 # API
 gcsfs
 google-cloud-storage
-mlflow
 s3fs
 requests
 fastapi
@@ -33,5 +32,4 @@ memoized-property
 termcolor
 
 # deep learning
-tensorflow
 bs4
