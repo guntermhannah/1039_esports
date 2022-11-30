@@ -68,12 +68,9 @@ def predict(account_id, opponent_id):
 # ~~~ Test the API on localhost ~~~
 # http://localhost:8000/predict?account_id=148673797&opponent_id=392047872
 
-<<<<<<< HEAD
-=======
-    return prediction
->>>>>>> a9de2b0f77a3c70116bc3e5c24bb7586684a576e
 
 
+# ~~~ Testing notes ~~~
 #print(predict(148673797, 392047872))
 #print(predict(148673797, 392047872))
 # make a decision based on the model from here and return the prediction to the user
