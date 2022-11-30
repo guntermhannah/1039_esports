@@ -1,3 +1,4 @@
+import pickle
 from sklearn.pipeline import Pipeline
 from xgboost import XGBClassifier
 from sklearn.preprocessing import RobustScaler
@@ -19,3 +20,7 @@ def pipeline():
     pipe.fit(X_train, y_train)
 
     return pipe
+
+# Ecport pipeline as pickle file
+with open("pipeline.pkl", "wb") as file:
+    pickle.dump(pipeline(), file)
