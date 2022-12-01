@@ -247,4 +247,4 @@ if results_fetched:
                             )
             fig.update_yaxes(showgrid = False)
             st.plotly_chart(fig)
-            st.table(both_stats.T.reset_index(drop=True))
+            st.table(both_stats.T.rename(index={"Player 1": "P1", "Player 2": "P2"}))
