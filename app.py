@@ -121,7 +121,7 @@ if st.button("Who will win?"):
                         "opponent_gold_per_min": 498.5,
                         "opponent_hero_damage_per_min": 688.956166,
                         "opponent_tower_damage_per_min": 112.15368,
-                        "opponent_last_hits_per_min": 5.42945109,
+                        "opponent_last_hits_per_min": 2.42945109,
                         "player_win_ratio": 0.4943907,
                         "opponent_win_ratio": 0.5128205
                     }]}
@@ -204,17 +204,37 @@ if results_fetched:
         # give them the option of viewing the stats
         with st.expander("Show me my stats", expanded = False) :
             # create graph
-            fig = px.bar(player_stats.T, color_discrete_sequence=["DeepSkyBlue","Tomato"])
+            fig = px.bar(player_stats.T,
+                         color_discrete_sequence=["DeepSkyBlue","Tomato"],
+                         labels = {"index": "Ability", "value": "Avg per Min"},
+                         template = "plotly_dark",
+                         hover_data = {"variable" :False})
+            fig.update_layout(paper_bgcolor= "rgba(0,0,0,0)",
+                            plot_bgcolor = "rgba(0,0,0,0)",
+                            showlegend = False,
+                            title = {
+                                "text" : "Your Recent Match Statistics",
+                                "y" : 0.95,
+                                "x" : 0.5,
+                                "yanchor" : "top"
+                            }
+            )
             fig.update_yaxes(showgrid = False)
             st.plotly_chart(fig)
-            st.write(player_stats)
+            # st.write(player_stats)
 
     else:
-        st.markdown(f"**{roles[winner].capitalize()}** has a **{win_prob}** probability of winning.")
+        st.markdown(f"**{roles[winner].capitalize()}** has a **{round(win_prob,3)}** probability of winning.")
         with st.expander("Compare Player Statistics", expanded=True):
             # create graph
-            fig = px.bar(pd.DataFrame(both_stats), barmode = "group", color_discrete_sequence=["DeepSkyBlue", "Tomato"])
-            fig.update_layout(template = "plotly_dark")
+            fig = px.bar(pd.DataFrame(both_stats), barmode = "group",
+                         color_discrete_sequence=["DeepSkyBlue", "Tomato"],
+                         title = "Player 1 and Player 2 Recent Match Statistics",
+                         labels = {"index": "Ability", "value": "Avg per Min", "variable": "Player"},
+                         template = "plotly_dark",
+                         hover_data = {"variable":False})
+            fig.update_layout(paper_bgcolor= "rgba(0,0,0,0)",
+                            plot_bgcolor = "rgba(0,0,0,0)")
             fig.update_yaxes(showgrid = False)
             st.plotly_chart(fig)
         with st.expander("Detailed Player Statistics"):
