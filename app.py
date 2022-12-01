@@ -42,6 +42,7 @@ def background_image_style(path):
         padding: 15px 50px 50px 50px;
         border-radius: 10px;
         margin: 10px;
+        width: 750px
     }}
     .stSelectbox {{
         width: 50% !important
