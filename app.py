@@ -49,6 +49,9 @@ def background_image_style(path):
     .stAlert {{
         width: 86% !important
     }}
+    .stMarkdown {{
+        width: 86% !important
+    }}
     </style>
     '''
     return style
@@ -194,12 +197,9 @@ if results_fetched:
     if role == "Player 🕹️":
         # tell the player who will win
         if winner == "player":
-            st.write(
-                f"Congratulations! {roles[winner].capitalize()} have a higher probability of winning than your opponent!!"
-            )
+            st.markdown(f" #### Congratulations! {roles[winner].capitalize()} have a higher probability of winning than your opponent!!")
         else:
-            st.write(
-                f"Bad news... Your opponent has a higher chance of winning 😓")
+            st.markdown("""#### Bad news... Your opponent has a higher chance of winning 😓""")
 
         # give them the option of viewing the stats
         with st.expander("Show me my stats", expanded=False):
@@ -226,9 +226,7 @@ if results_fetched:
             st.table(player_stats)
 
     else:
-        st.markdown(
-            f"**{roles[winner].capitalize()}** has a **{round(win_prob,3)}** probability of winning."
-        )
+        st.markdown(f"#### **{roles[winner].capitalize()}** has a **{round(win_prob*100,1)}%** probability of winning.")
         with st.expander("Compare Player Statistics", expanded=True):
             # create graph
             fig = px.bar(pd.DataFrame(both_stats),
@@ -248,6 +246,4 @@ if results_fetched:
                             )
             fig.update_yaxes(showgrid = False)
             st.plotly_chart(fig)
-            st.table(both_stats.T)
-
-
+            st.table(both_stats.T.reset_index(drop=True))
