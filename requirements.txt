@@ -25,6 +25,7 @@ s3fs
 requests
 fastapi
 uvicorn
+streamlit
 
 # utilities
 six>=1.14
