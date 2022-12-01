@@ -7,12 +7,6 @@ import requests
 import os
 import time
 
-<<<<<<< HEAD
-
-
-
-=======
->>>>>>> ab01bfc95500649ce40438819ad5f9b543fb7681
 # local imports
 from esports.get_wl_data import get_wl_data
 
