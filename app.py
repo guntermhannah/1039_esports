@@ -247,7 +247,10 @@ if results_fetched:
                                 "y" : 0.95,
                                 "x" : 0.5,
                                 "yanchor" : "top"},
-                            legend=dict(title=None)
+                            legend = {
+                            "title" : None,
+                            "xanchor":"left",
+                            "x":0.01}
                             )
             fig.update_yaxes(showgrid = False)
             st.plotly_chart(fig)
