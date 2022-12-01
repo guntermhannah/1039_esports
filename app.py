@@ -96,14 +96,14 @@ if st.button("Who will win?"):
     with st.spinner("Calculating the odds..."):
         time.sleep(2)
         # get data from model api
-        url = "url"
-        params = {"player_account_id": player_account_id,
-                  "opponent_account_id": opp_account_id}
+        url = "http://34.95.18.189:8000/predict"
+        params = {"account_id": player_account_id,
+                  "opponent_id": opp_account_id}
         try:
             response = requests.get(url, params)
             data = response.json()
         except:
-            data = {"player_pred": 0.91573916,
+            data = {"player_pred": 0.091573916,
                     "opponent_pred": 0.9084261059,
                     "stats":[{
                         "player_kills_per_min": 0.14095446,
@@ -229,12 +229,17 @@ if results_fetched:
             # create graph
             fig = px.bar(pd.DataFrame(both_stats), barmode = "group",
                          color_discrete_sequence=["DeepSkyBlue", "Tomato"],
-                         title = "Player 1 and Player 2 Recent Match Statistics",
                          labels = {"index": "Ability", "value": "Avg per Min", "variable": "Player"},
                          template = "plotly_dark",
                          hover_data = {"variable":False})
             fig.update_layout(paper_bgcolor= "rgba(0,0,0,0)",
-                            plot_bgcolor = "rgba(0,0,0,0)")
+                            plot_bgcolor = "rgba(0,0,0,0)",
+                            title = {
+                                "text" :"Player 1 and Player 2 Recent Match Statistics",
+                                "y" : 0.95,
+                                "x" : 0.5,
+                                "yanchor" : "top"}
+                            )
             fig.update_yaxes(showgrid = False)
             st.plotly_chart(fig)
         with st.expander("Detailed Player Statistics"):
