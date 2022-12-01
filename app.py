@@ -53,6 +53,10 @@ def background_image_style(path):
     .stMarkdown {{
         width: 86% !important
     }}
+    table {{
+        background-color: rgba(158,120,120,0.8);
+    }}
+
     </style>
     '''
     return style
