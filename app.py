@@ -219,7 +219,7 @@ if results_fetched:
             st.table(player_stats)
 
     else:
-        st.markdown(f"#### **{roles[winner].capitalize()}** has a **{round(win_prob,3)}** probability of winning.")
+        st.markdown(f"#### **{roles[winner].capitalize()}** has a **{round(win_prob*100,1)}%** probability of winning.")
         with st.expander("Compare Player Statistics", expanded=True):
             # create graph
             fig = px.bar(pd.DataFrame(both_stats), barmode = "group",
