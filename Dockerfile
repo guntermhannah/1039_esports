@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD uvicorn esports.api.fast_api:app --host 0.0.0.0 --port $PORT
+CMD ["sh", "-c", "uvicorn esports.api.fast_api:app --host 0.0.0.0 --port $PORT"]
