@@ -9,7 +9,6 @@ import time
 
 
 # local imports
-from scrape.steam_id_finder import steam_id_finder
 from esports.get_wl_data import get_wl_data
 api_key = os.environ.get("API_KEY")
 
@@ -48,12 +47,6 @@ def background_image_style(path):
         width: 50% !important
     }}
     .stAlert {{
-        width: 86% !important
-    }}
-    table {{
-        width: 86% !important
-    }}
-    .css-1ec096l {{
         width: 86% !important
     }}
     </style>
@@ -96,7 +89,7 @@ if st.button("Who will win?"):
     with st.spinner("Calculating the odds..."):
         time.sleep(2)
         # get data from model api
-        url = "http://34.95.18.189:8000/predict"
+        url = "http://34.95.18.189:8000/predict?account_id=148673797&opponent_id=392047872"
         params = {"account_id": player_account_id,
                   "opponent_id": opp_account_id}
         try:
@@ -221,7 +214,7 @@ if results_fetched:
             )
             fig.update_yaxes(showgrid = False)
             st.plotly_chart(fig)
-            # st.write(player_stats)
+            st.table(player_stats)
 
     else:
         st.markdown(f"**{roles[winner].capitalize()}** has a **{round(win_prob,3)}** probability of winning.")
@@ -238,93 +231,9 @@ if results_fetched:
                                 "text" :"Player 1 and Player 2 Recent Match Statistics",
                                 "y" : 0.95,
                                 "x" : 0.5,
-                                "yanchor" : "top"}
+                                "yanchor" : "top"},
+                            legend=dict(title=None)
                             )
             fig.update_yaxes(showgrid = False)
             st.plotly_chart(fig)
-        with st.expander("Detailed Player Statistics"):
-            st.write(both_stats.T)
-
-
-
-
-
-
-# ~~~~~~~~~~~~ misc ~~~~~~~~~~~~~~~~
-
-# # user_data = get_user_data(account_id)
-# # st.write("Data for user: ", account_id)
-# # st.write(user_data.head())
-
-# # Return the processed statistics on the user's data
-# def get_user_stats()->pd.DataFrame:
-#     # Example placeholder
-#     return pd.DataFrame(
-#     np.random.randn(10,5),
-#     columns=('col %d' % i for i in range(5))
-#     )
-
-
-# # Return processed statistics of average user in the same rank
-# @st.cache
-# def get_rank_stats(rank:int)->pd.DataFrame:
-
-#     # if-statements depending on rank chosen by user
-#     # if user_selected_rank == 'Herald (0-769)':
-
-#     # Example placeholder
-#     return pd.DataFrame(
-#         np.random.randn(10,5),
-#         columns=('col %d' % i for i in range(5))
-#     )
-
-# # Comparison
-
-# # st.markdown("""## Compare your statistics with other ranks """)
-
-
-
-# # col1_a, col2_a, col3_a = st.columns(3)
-
-# # user_selected_rank = col1_a.selectbox("Select a rank for comparison: ",
-# #                                     ('Herald (0-769)',
-# #                                     'Guardian (770-1539)',
-# #                                     'Crusader (1540-2309)',
-# #                                     'Archon (2310-3079)',
-# #                                     'Legend (3080-3849)',
-# #                                     'Ancient (3850-4619)',
-# #                                     'Divine (4620-5420+)',
-# #                                     'Immortal (∽6000+)'))
-
-# # user_selected_hero = col3_a.selectbox("Select your hero: ",
-# #                                   ('Pudge',
-# #                                    'Juggernaut',
-# #                                    'Sniper',
-# #                                    'Lion',
-# #                                    'Phantom Assassin',
-# #                                    'Shadow Fiend',
-# #                                    'Witch Doctor',
-# #                                    'Ogre Magi',
-# #                                    'Zeus',
-# #                                    'Invoker'))
-
-# # user_selected_role = col2_a.selectbox("Select your role: ",
-# #                                     ("Carry",
-# #                                     "Tank",
-# #                                     "Support"))
-
-# # col1_b, col2_b = st.columns(2)
-
-# # col1_b.write("Stats for user:")
-# # col1_b.write(get_user_stats())
-
-# # col2_b.write("Comparison stats:")
-# # col2_b.write(get_rank_stats())
-
-# # Recommendations
-#     # Areas most affected
-#     # Areas least affected
-#     # Areas most important
-
-# # st.markdown("""## Recommendations """)
-# # st.text(""" Recommendations """)
+            st.table(both_stats.T)
