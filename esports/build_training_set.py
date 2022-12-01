@@ -9,7 +9,6 @@ from transform_data import average_player_data
 
 def wrapper(x):
     if type(average_player_data(x)) == str:
-<<<<<<< HEAD:1039_esports/build_training_set.py
         empty_df ={'deaths_per_min':0, 
                 'assists_per_min': 0, 
                 'tower_damage_per_min': 0, 
@@ -19,17 +18,6 @@ def wrapper(x):
                 'hero_damage_per_min': 0, 
                 'last_hits_per_min': 0}
         return pd.DataFrame([empty_df.values()], columns = empty_df.keys())
-=======
-        return {'deaths_per_min':None,
-                'assists_per_min': None,
-                'tower_damage_per_min': None,
-                'xp_per_min': None,
-                'gold_per_min': None,
-                'kills_per_min': None,
-                'hero_damage_per_min': None,
-                'last_hits_per_min': None
-        }
->>>>>>> master:esports/build_training_set.py
     else:
         return average_player_data(x)
 
@@ -73,11 +61,7 @@ def get_training_set():
     # group player data by match_id, take the first account of winning and losing teams
     tmp = df.groupby(["match_id", "isRadiant"]).first()
 
-<<<<<<< HEAD:1039_esports/build_training_set.py
     counter = 0
-=======
-
->>>>>>> master:esports/build_training_set.py
     # create df of pairs of winners and losers
     for match, new_df in tmp.groupby(level=[0]):
         game = {"match_id": 0,
@@ -128,13 +112,8 @@ def get_training_set():
         else:
             game["winner"] = opponent_account_id
 
-<<<<<<< HEAD:1039_esports/build_training_set.py
 
         game_df = pd.DataFrame([game.values()], columns = game.keys())
-=======
-        game_df = pd.DataFrame([game.values()], columns = game.keys())
-
->>>>>>> master:esports/build_training_set.py
         
         # drop data without per min stats
         game_df = game_df.drop(columns = ["player_net_worth",
@@ -154,7 +133,6 @@ def get_training_set():
             continue
 
 
-<<<<<<< HEAD:1039_esports/build_training_set.py
         # get player and opponent wl data
         player_wl_data = get_wl_data(player_account_id)
         if player_wl_data["win"] + player_wl_data["lose"] == 0:
@@ -177,6 +155,4 @@ def get_training_set():
         time.sleep(4)
 
 
-=======
->>>>>>> master:esports/build_training_set.py
 get_training_set()

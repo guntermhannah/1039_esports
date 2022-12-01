@@ -27,7 +27,7 @@ def get_wl_data(account_id):
 def build_wl_dataset():
     """builds csv file of individual player win/loss data"""
 
-    player_pairs = pd.read_csv(os.path.join("data","player_pairs_avg_stats.csv"))
+    player_pairs = pd.read_csv(os.path.join("esports", "data","player_pairs_avg_stats.csv"))
 
     for i in range(len(player_pairs)):
         #get player wl data
@@ -38,8 +38,8 @@ def build_wl_dataset():
         win_loss = {"account_id":account_id,"wins":data["win"],"losses":data["lose"], "total" :data["win"]+data["lose"]}
 
         df = pd.DataFrame([win_loss.values()], columns = win_loss.keys())
-
-        df.to_csv(os.path.join("data", "wl_data.csv"), mode = "a", index = False, header=False)
+        
+        df.to_csv(os.path.join("esports", "data", "wl_data.csv"), mode = "a", index = False, header=False)
 
         #get opponent wl data
         account_id = str(int(player_pairs.iloc[i,10]))
@@ -49,8 +49,8 @@ def build_wl_dataset():
         win_loss = {"account_id":account_id,"wins":data["win"],"losses":data["lose"], "total" :data["win"]+data["lose"]}
 
         df = pd.DataFrame([win_loss.values()], columns = win_loss.keys())
-
-        df.to_csv(os.path.join("data", "wl_data.csv"), mode = "a", index = False, header=False)
+        
+        df.to_csv(os.path.join("esports", "data", "wl_data.csv"), mode = "a", index = False, header=False)
 
         time.sleep(1)
 

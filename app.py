@@ -1,80 +1,253 @@
-import random
 import streamlit as st
 import numpy as np
 import pandas as pd
+import base64
+import plotly.express as px
+import requests
+import os
+import time
+
 
 # local imports
 from scrape.steam_id_finder import steam_id_finder
 from esports.get_wl_data import get_wl_data
+api_key = os.environ.get("API_KEY")
 
 # streamlit run app.py
 # Page structure
 st.set_page_config(
-    page_title="Dota2 Player Statistics",
+    page_title="DotaDubs",
     page_icon="🕹️",
     layout="centered",
     initial_sidebar_state="auto"
 )
-st.image('esports/data/home_page_img.jpeg')
 
+# set background image
+@st.cache
+def load_image(path):
+    with open(path, 'rb') as f:
+        data = f.read()
+    encoded = base64.b64encode(data).decode()
+    return encoded
 
-# Sidebar
-st.sidebar.markdown("# Navigation")
-    # Create multiple pages (from files)
-    # copy the corresponding information into each page
+def background_image_style(path):
+    encoded = load_image(path)
+    style = f'''
+    <style>
+    .stApp {{
+        background-image: url("data:image/png;base64,{encoded}");
+        background-size: cover;
+    }}
+    .css-1n76uvr {{
+        background-color: rgba(158,128,128,0.6);
+        padding: 15px 50px 50px 50px;
+        border-radius: 10px;
+        margin: 10px;
+    }}
+    .stSelectbox {{
+        width: 50% !important
+    }}
+    .stAlert {{
+        width: 86% !important
+    }}
+    table {{
+        width: 86% !important
+    }}
+    .css-1ec096l {{
+        width: 86% !important
+    }}
+    </style>
+    '''
+    return style
+
+image_path = "esports/data/radiant-dire.jpg"
+st.write(background_image_style(image_path), unsafe_allow_html=True)
+
 
 # Page title and description
-st.markdown("""# Dota2 Win Predictor 🕹️""")
-st.text(""" We predict the outcome of the match between you and an opponent """)
+st.title("""DotaDubs 🕹️""")
+st.markdown("""*Predicting who will emerge victorious in the battle to destroy each other's Ancients*""")
 
-# Explanation of page
-st.markdown("""## ❓ How does it work ❓ """)
-st.text(""" Using the OpenDota Api, we retrieve your last matches as well as the
-opponents last matches and predict who will win""")
 
-st.markdown("""## ❗ Get started ❗ """)
+st.markdown("""### ❗ Get started ❗ """)
 
-# Prompt user to enter an account_id
-account_id = st.text_input("Enter your Account ID: ")
-opps_account_id = st.text_input("Enter your Opponent's Account ID: ")
+# User chooses their role (player/better)
+role = st.selectbox("Are you a player or a better?", ["Player 🕹️", "Better 💸"])
+if role == "Player 🕹️":
+    roles = {"player": "you", "player_poss": "your", "opponent": "your opponent", "opp_pos":"your opponent's"}
+else:
+    roles = {"player":"Player 1", "player_poss":"Player 1's", "opponent": "Player 2", "opp_pos":"Player 2's"}
 
-# if account_id and opps_account_id
-if account_id and opps_account_id != '':
-    # retrieve the steam32 id for both accounts and check if they exist
-    user_id, opps_id = steam_id_finder(account_id), steam_id_finder(opps_account_id)
-    if user_id and opps_id is not False:
-        st.success("The ID's entered are correct")
-    elif user_id and opps_id is False:
-        st.error("Both account ID's are not valid, please try again")
-    elif user_id is False:
-        st.error(f'The account ID entered is not a valid account id, please try again')
-    elif opps_id is False:
-        st.error(f"The opponent's account ID is not a valid account id, please try again")
 
-    # if the id inputted are correct, we get their win rates
-    if user_id != '':
-        user_wr = get_wl_data(user_id)
-        opps_wr = get_wl_data(opps_id)
-        # since the method outputs 0,0 for faulty ids, we just give them an arbitrary number
+# Prompt user to enter account ids for player and opponent
+columns = st.columns(2)
+
+player_account_id = columns[0].text_input(f"Enter {roles['player_poss']} Account ID: ")
+opp_account_id = columns[1].text_input(f"Enter {roles['opp_pos']} Account ID: ")
+if player_account_id and (not player_account_id.isnumeric() or not opp_account_id.isnumeric()):
+    st.error("Hmmm... Something went wrong. Try a different account ID.")
+
+#------- API structure to get prediction from model --------
+
+# button to retrieve results
+results_fetched = False
+if st.button("Who will win?"):
+    results_fetched = True
+    with st.spinner("Calculating the odds..."):
+        time.sleep(2)
+        # get data from model api
+        url = "http://34.95.18.189:8000/predict"
+        params = {"account_id": player_account_id,
+                  "opponent_id": opp_account_id}
         try:
-            user_wr = user_wr['win'] / (user_wr['win'] + user_wr['lose'])
-        except Exception as e:
-            user_wr = 0.01
-        try:
-            opps_wr = user_wr['win'] / (user_wr['win'] + user_wr['lose'])
-        except Exception as e:
-            opps_wr = 0.01
+            response = requests.get(url, params)
+            data = response.json()
+        except:
+            data = {"player_pred": 0.091573916,
+                    "opponent_pred": 0.9084261059,
+                    "stats":[{
+                        "player_kills_per_min": 0.14095446,
+                        "player_deaths_per_min": 0.21295066,
+                        "player_assists_per_min": 0.37140262249,
+                        "player_xp_per_min": 525.45,
+                        "player_gold_per_min": 344.8,
+                        "player_hero_damage_per_min": 439.7755562,
+                        "player_tower_damage_per_min": 80.660265,
+                        "player_last_hits_per_min": 2.0921136,
+                        "opponent_kills_per_min": 0.21827707,
+                        "opponent_deaths_per_min": 0.15595088,
+                        "opponent_assists_per_min": 0.2764607,
+                        "opponent_xp_per_min": 701.2,
+                        "opponent_gold_per_min": 498.5,
+                        "opponent_hero_damage_per_min": 688.956166,
+                        "opponent_tower_damage_per_min": 112.15368,
+                        "opponent_last_hits_per_min": 2.42945109,
+                        "player_win_ratio": 0.4943907,
+                        "opponent_win_ratio": 0.5128205
+                    }]}
 
-        # st.text(f'the account is is {user_wr}')
-        # st.text(f'the type is is {type(opps_wr)}')
 
-        # if user wins or loses
-        if user_wr > opps_wr:
-            st.write("You have a higher probability of winning")
-        elif user_wr == opps_wr:
-            st.write("You both have the same probability of winning")
+        # sort data
+        player_prob = data["player_pred"]
+        opp_prob = data["opponent_pred"]
+        stats = pd.Series(data["stats"][0])
+
+        # scale down certain stats to make data more visually appealing
+        stats["player_xp_per_min"] = stats["player_xp_per_min"]/400
+        stats["opponent_xp_per_min"] = stats["opponent_xp_per_min"]/400
+        stats["player_gold_per_min"] = stats["player_gold_per_min"]/400
+        stats["opponent_gold_per_min"] = stats["opponent_gold_per_min"]/400
+        stats["player_tower_damage_per_min"] = stats["player_tower_damage_per_min"]/400
+        stats["opponent_tower_damage_per_min"] = stats["opponent_tower_damage_per_min"]/400
+        stats["player_hero_damage_per_min"] = stats["player_hero_damage_per_min"]/400
+        stats["opponent_hero_damage_per_min"] = stats["opponent_hero_damage_per_min"]/400
+
+
+        # determine winner
+        winner = "player" if player_prob > opp_prob else "opponent"
+        win_prob = data[f"{winner}_pred"]
+
+        # get player and opponent stats
+        player_stats = pd.DataFrame(stats[["player_kills_per_min",
+                        "player_deaths_per_min",
+                        "player_assists_per_min",
+                        "player_xp_per_min",
+                        "player_gold_per_min",
+                        "player_hero_damage_per_min",
+                        "player_tower_damage_per_min",
+                        "player_last_hits_per_min",
+                        "player_win_ratio"]],
+                        columns = [roles["player"].capitalize()]
+        ).T
+        player_stats.columns = ["Kills",
+                        "Deaths",
+                        "Assists",
+                        "XP",
+                        "Gold",
+                        "Hero Damage",
+                        "Tower Damage",
+                        "Last Hits",
+                        "Win Ratio"]
+        opp_stats = pd.DataFrame(stats[["opponent_kills_per_min",
+                        "opponent_deaths_per_min",
+                        "opponent_assists_per_min",
+                        "opponent_xp_per_min",
+                        "opponent_gold_per_min",
+                        "opponent_hero_damage_per_min",
+                        "opponent_tower_damage_per_min",
+                        "opponent_last_hits_per_min",
+                        "opponent_win_ratio"]],
+                        columns = [roles["opponent"].capitalize()]
+        ).T
+        opp_stats.columns = ["Kills",
+                        "Deaths",
+                        "Assists",
+                        "XP",
+                        "Gold",
+                        "Hero Damage",
+                        "Tower Damage",
+                        "Last Hits",
+                        "Win Ratio"]
+        both_stats = pd.concat([player_stats, opp_stats]).T
+
+# -------------- interpreting results ----------------
+
+# if user wins or loses
+if results_fetched:
+    if role == "Player 🕹️":
+        # tell the player who will win
+        if winner == "player":
+            st.write(f"Congratulations! {roles[winner].capitalize()} have a higher probability of winning than your opponent!!")
         else:
-            st.write("The opponent has a higher probability of winning")
+            st.write(f"Bad news... Your opponent has a higher chance of winning 😓")
+
+        # give them the option of viewing the stats
+        with st.expander("Show me my stats", expanded = False) :
+            # create graph
+            fig = px.bar(player_stats.T,
+                         color_discrete_sequence=["DeepSkyBlue","Tomato"],
+                         labels = {"index": "Ability", "value": "Avg per Min"},
+                         template = "plotly_dark",
+                         hover_data = {"variable" :False})
+            fig.update_layout(paper_bgcolor= "rgba(0,0,0,0)",
+                            plot_bgcolor = "rgba(0,0,0,0)",
+                            showlegend = False,
+                            title = {
+                                "text" : "Your Recent Match Statistics",
+                                "y" : 0.95,
+                                "x" : 0.5,
+                                "yanchor" : "top"
+                            }
+            )
+            fig.update_yaxes(showgrid = False)
+            st.plotly_chart(fig)
+            # st.write(player_stats)
+
+    else:
+        st.markdown(f"**{roles[winner].capitalize()}** has a **{round(win_prob,3)}** probability of winning.")
+        with st.expander("Compare Player Statistics", expanded=True):
+            # create graph
+            fig = px.bar(pd.DataFrame(both_stats), barmode = "group",
+                         color_discrete_sequence=["DeepSkyBlue", "Tomato"],
+                         labels = {"index": "Ability", "value": "Avg per Min", "variable": "Player"},
+                         template = "plotly_dark",
+                         hover_data = {"variable":False})
+            fig.update_layout(paper_bgcolor= "rgba(0,0,0,0)",
+                            plot_bgcolor = "rgba(0,0,0,0)",
+                            title = {
+                                "text" :"Player 1 and Player 2 Recent Match Statistics",
+                                "y" : 0.95,
+                                "x" : 0.5,
+                                "yanchor" : "top"}
+                            )
+            fig.update_yaxes(showgrid = False)
+            st.plotly_chart(fig)
+        with st.expander("Detailed Player Statistics"):
+            st.write(both_stats.T)
+
+
+
+
 
 
 # ~~~~~~~~~~~~ misc ~~~~~~~~~~~~~~~~
