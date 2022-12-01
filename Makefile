@@ -53,3 +53,8 @@ pypi_test:
 
 pypi:
 	@twine upload dist/* -u $(PYPI_USERNAME)
+
+# API
+
+run_api:
+	uvicorn esports.api.fast_api:app --reload --host 0.0.0.0
