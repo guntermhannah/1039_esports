@@ -87,9 +87,8 @@ results_fetched = False
 if st.button("Who will win?"):
     results_fetched = True
     with st.spinner("Calculating the odds..."):
-        time.sleep(2)
         # get data from model api
-        url = "http://34.95.18.189:8000/predict?account_id=148673797&opponent_id=392047872"
+        url = "http://localhost:8000/predict"
         params = {"account_id": player_account_id,
                   "opponent_id": opp_account_id}
         try:
