@@ -8,8 +8,9 @@ import os
 import time
 
 
+
+
 # local imports
-from scrape.steam_id_finder import steam_id_finder
 from esports.get_wl_data import get_wl_data
 api_key = os.environ.get("API_KEY")
 
@@ -96,7 +97,7 @@ if st.button("Who will win?"):
     with st.spinner("Calculating the odds..."):
         time.sleep(2)
         # get data from model api
-        url = "http://34.95.18.189:8000/predict"
+        url = "url"
         params = {"account_id": player_account_id,
                   "opponent_id": opp_account_id}
         try:
