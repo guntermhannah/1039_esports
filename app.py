@@ -109,7 +109,7 @@ if st.button("Who will win?"):
     results_fetched = True
     with st.spinner("Calculating the odds..."):
         # get data from model api
-        url = "http://0.0.0.0:8000/predict"
+        url = "https://esports-ypg5bridsa-ue.a.run.app/predict"
         params = {
             "account_id": player_account_id,
             "opponent_id": opp_account_id
@@ -202,9 +202,13 @@ if results_fetched:
     if role == "Player 🕹️":
         # tell the player who will win
         if winner == "player":
-            st.markdown(f" #### Congratulations! {roles[winner].capitalize()} have a higher probability of winning than your opponent!!")
+            st.markdown(
+                f" #### Congratulations! {roles[winner].capitalize()} have a higher probability of winning than your opponent!!"
+            )
         else:
-            st.markdown("""#### Bad news... Your opponent has a higher chance of winning 😓""")
+            st.markdown(
+                """#### Bad news... Your opponent has a higher chance of winning 😓"""
+            )
 
         # give them the option of viewing the stats
         with st.expander("Show me my stats", expanded=False):
@@ -231,27 +235,39 @@ if results_fetched:
             st.table(player_stats)
 
     else:
-        st.markdown(f"#### **{roles[winner].capitalize()}** has a **{round(win_prob*100,1)}%** probability of winning.")
+        st.markdown(
+            f"#### **{roles[winner].capitalize()}** has a **{round(win_prob*100,1)}%** probability of winning."
+        )
         with st.expander("Compare Player Statistics", expanded=True):
             # create graph
             fig = px.bar(pd.DataFrame(both_stats),
                          barmode="group",
                          color_discrete_sequence=["DeepSkyBlue", "Tomato"],
-                         labels = {"index": "Ability", "value": "Avg per Min", "variable": "Player"},
-                         template = "plotly_dark",
-                         hover_data = {"variable":False})
-            fig.update_layout(paper_bgcolor= "rgba(0,0,0,0)",
-                            plot_bgcolor = "rgba(0,0,0,0)",
-                            title = {
-                                "text" :"Player 1 and Player 2 Recent Match Statistics",
-                                "y" : 0.95,
-                                "x" : 0.5,
-                                "yanchor" : "top"},
-                            legend = {
-                            "title" : None,
-                            "xanchor":"left",
-                            "x":0.01}
-                            )
-            fig.update_yaxes(showgrid = False)
+                         labels={
+                             "index": "Ability",
+                             "value": "Avg per Min",
+                             "variable": "Player"
+                         },
+                         template="plotly_dark",
+                         hover_data={"variable": False})
+            fig.update_layout(
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                title={
+                    "text": "Player 1 and Player 2 Recent Match Statistics",
+                    "y": 0.95,
+                    "x": 0.5,
+                    "yanchor": "top"
+                },
+                legend={
+                    "title": None,
+                    "xanchor": "left",
+                    "x": 0.01
+                })
+            fig.update_yaxes(showgrid=False)
             st.plotly_chart(fig)
-            st.table(both_stats.T.rename(index={"Player 1": "P1", "Player 2": "P2"}))
+            st.table(
+                both_stats.T.rename(index={
+                    "Player 1": "P1",
+                    "Player 2": "P2"
+                }))
